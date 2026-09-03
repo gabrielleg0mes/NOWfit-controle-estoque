@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -505,6 +506,7 @@ td{
   }
 }
 </style>
+
 </head>
 
 <body>
@@ -1012,7 +1014,17 @@ function alterarCampo(
 
   salvarDia();
 
-  render();
+  /*
+    FIX: não re-renderiza a tabela inteira a cada tecla digitada.
+    Isso recriava os <input> via innerHTML e fazia o campo
+    parecer "voltar vazio" enquanto a pessoa ainda digitava.
+    Apenas os valores dependentes (estoque atual/faturado dessa
+    linha e os totais) são atualizados no DOM, sem tocar no
+    próprio campo que está sendo editado.
+  */
+
+  atualizarLinhaProduto(pid);
+  atualizarTotais();
 }
 
 function alterarResponsavel(valor){
@@ -1051,7 +1063,188 @@ function ajustarEstoque(pid,valor){
 
   salvarDia();
 
-  render();
+  /*
+    FIX: mesmo motivo do alterarCampo — evita re-render total
+    enquanto a pessoa está digitando o ajuste físico.
+  */
+
+  atualizarLinhaProduto(pid);
+  atualizarLinhaAjuste(pid);
+  atualizarTotais();
+}
+
+/* ============================================================
+   ATUALIZAÇÃO PARCIAL DO DOM (sem perder foco do input)
+============================================================ */
+
+function atualizarLinhaProduto(pid){
+
+  const registro=
+    state.dia.conferencias[state.conf];
+
+  const item=
+    registro.produtos[pid]||{};
+
+  const atual=
+    estoqueFinal(state.conf,pid);
+
+  const vendido=
+    Number(item.vendido)||0;
+
+  const produto=
+    state.produtos.find(p=>p.id===pid);
+
+  const faturado=
+    vendido*Number(produto?.preco||0);
+
+  const linha=
+    document.querySelector(
+      `[data-linha-produto="${pid}"]`
+    );
+
+  if(!linha)return;
+
+  const celAnterior=
+    linha.querySelector(
+      "[data-cel-anterior]"
+    );
+
+  if(celAnterior){
+
+    celAnterior.textContent=
+      estoqueAnterior(state.conf,pid);
+  }
+
+  const celAtual=
+    linha.querySelector(
+      "[data-cel-atual]"
+    );
+
+  if(celAtual){
+
+    celAtual.textContent=atual;
+
+    celAtual.classList.toggle(
+      "neg",
+      atual<0
+    );
+
+    celAtual.classList.toggle(
+      "ok",
+      atual>=0
+    );
+  }
+
+  const celFaturado=
+    linha.querySelector(
+      "[data-cel-faturado]"
+    );
+
+  if(celFaturado){
+
+    celFaturado.textContent=
+      dinheiro(faturado);
+  }
+}
+
+function atualizarLinhaAjuste(pid){
+
+  const linha=
+    document.querySelector(
+      `[data-linha-ajuste="${pid}"]`
+    );
+
+  if(!linha)return;
+
+  const calculadoEl=
+    linha.querySelector(
+      "[data-cel-calculado]"
+    );
+
+  const registro=
+    state.dia.conferencias[state.conf];
+
+  const item=
+    registro.produtos[pid]||{};
+
+  const calculado=
+    (function(){
+
+      const anterior=
+        estoqueAnterior(state.conf,pid);
+
+      const reposicao=
+        Number(item.reposicao)||0;
+
+      const vendido=
+        Number(item.vendido)||0;
+
+      return anterior+reposicao-vendido;
+    })();
+
+  if(calculadoEl){
+    calculadoEl.textContent=calculado;
+  }
+
+  const ajuste=item.ajuste;
+
+  const transferido=
+    ajuste!==null &&
+    ajuste!==undefined &&
+    ajuste!==""
+    ?Number(ajuste)
+    :calculado;
+
+  const transferidoEl=
+    linha.querySelector(
+      "[data-cel-transferido]"
+    );
+
+  if(transferidoEl){
+    transferidoEl.textContent=transferido;
+  }
+}
+
+function atualizarTotais(){
+
+  const registro=
+    state.dia.conferencias[state.conf];
+
+  let totalQtd=0;
+  let totalFat=0;
+
+  state.produtos.forEach(p=>{
+
+    const item=
+      registro.produtos[p.id]||{};
+
+    const qtd=
+      Number(item.vendido)||0;
+
+    totalQtd+=qtd;
+
+    totalFat+=
+      qtd*Number(p.preco||0);
+  });
+
+  const qtdEl=
+    document.querySelector(
+      "[data-total-qtd]"
+    );
+
+  if(qtdEl){
+    qtdEl.textContent=totalQtd;
+  }
+
+  const fatEl=
+    document.querySelector(
+      "[data-total-fat]"
+    );
+
+  if(fatEl){
+    fatEl.textContent=
+      dinheiro(totalFat);
+  }
 }
 
 /* ============================================================
@@ -1090,7 +1283,9 @@ function textoConferencia(){
 
   let totalQtd=0;
   let totalFat=0;
-  let linhas="";
+  let totalReposto=0;
+  let linhasVendas="";
+  let linhasReposicao="";
 
   state.produtos.forEach(p=>{
 
@@ -1100,6 +1295,9 @@ function textoConferencia(){
     const qtd=
       Number(item.vendido)||0;
 
+    const reposto=
+      Number(item.reposicao)||0;
+
     if(qtd>0){
 
       const fat=
@@ -1108,8 +1306,22 @@ function textoConferencia(){
       totalQtd+=qtd;
       totalFat+=fat;
 
-      linhas+=
+      linhasVendas+=
         `• ${p.nome}: ${qtd}x — ${dinheiro(fat)}\n`;
+    }
+
+    /*
+      FIX: a reposição nunca era incluída na mensagem final,
+      mesmo quando preenchida. Agora ela aparece em uma seção
+      própria, junto com o estoque atual de cada produto.
+    */
+
+    if(reposto>0){
+
+      totalReposto+=reposto;
+
+      linhasReposicao+=
+        `• ${p.nome}: +${reposto}\n`;
     }
 
   });
@@ -1120,8 +1332,11 @@ function textoConferencia(){
     `Data: ${dataBR(state.data)}\n`+
     `Horário: ${conf.hora}\n`+
     `Responsável: ${registro.responsavel||"—"}\n\n`+
+    `*REPOSIÇÃO*\n`+
+    (linhasReposicao||"Nenhuma reposição registrada.\n")+
+    `Total reposto: ${totalReposto}\n\n`+
     `*VENDAS*\n`+
-    (linhas||"Nenhuma venda registrada.\n")+
+    (linhasVendas||"Nenhuma venda registrada.\n")+
     `\n*Itens vendidos:* ${totalQtd}\n`+
     `*Faturamento:* ${dinheiro(totalFat)}`;
 
@@ -1144,6 +1359,7 @@ function textoDia(){
 
   let totalQtd=0;
   let totalFat=0;
+  let totalReposto=0;
   let blocos="";
 
   CONFERENCIAS.forEach(
@@ -1156,9 +1372,11 @@ function textoDia(){
         return;
       }
 
-      let linhas="";
+      let linhasVendas="";
+      let linhasReposicao="";
       let qtdTurno=0;
       let fatTurno=0;
+      let repostoTurno=0;
 
       state.produtos.forEach(p=>{
 
@@ -1168,6 +1386,9 @@ function textoDia(){
         const qtd=
           Number(item.vendido)||0;
 
+        const reposto=
+          Number(item.reposicao)||0;
+
         if(qtd>0){
 
           const fat=
@@ -1176,19 +1397,37 @@ function textoDia(){
           qtdTurno+=qtd;
           fatTurno+=fat;
 
-          linhas+=
+          linhasVendas+=
             `• ${p.nome}: ${qtd}x\n`;
+        }
+
+        /*
+          FIX: mesma correção do fechamento por turno —
+          agora a reposição de cada turno também é somada
+          e listada no fechamento do dia.
+        */
+
+        if(reposto>0){
+
+          repostoTurno+=reposto;
+
+          linhasReposicao+=
+            `• ${p.nome}: +${reposto}\n`;
         }
 
       });
 
       totalQtd+=qtdTurno;
       totalFat+=fatTurno;
+      totalReposto+=repostoTurno;
 
       blocos+=
         `\n*${conf.turno} — ${conf.tipo}*\n`+
         `Responsável: ${registro.responsavel||"—"}\n`+
-        (linhas||"Nenhuma venda\n")+
+        `Reposição:\n`+
+        (linhasReposicao||"Nenhuma reposição\n")+
+        `Vendas:\n`+
+        (linhasVendas||"Nenhuma venda\n")+
         `Subtotal: ${dinheiro(fatTurno)}\n`;
     }
   );
@@ -1197,7 +1436,8 @@ function textoDia(){
     `*NOWFIT CEDRO — FECHAMENTO DO DIA*\n`+
     `Data: ${dataBR(state.data)}\n`+
     blocos+
-    `\n*TOTAL DE ITENS:* ${totalQtd}\n`+
+    `\n*TOTAL REPOSTO:* ${totalReposto}\n`+
+    `*TOTAL DE ITENS VENDIDOS:* ${totalQtd}\n`+
     `*FATURAMENTO TOTAL:* ${dinheiro(totalFat)}`
   );
 }
@@ -1220,6 +1460,7 @@ function calcularResumo(){
   let faturamento=0;
   let vendidos=0;
   let estoque=0;
+  let repostoTotal=0;
 
   const porTurno={
     Manhã:0,
@@ -1234,7 +1475,8 @@ function calcularResumo(){
     porProduto[p.id]={
       nome:p.nome,
       qtd:0,
-      fat:0
+      fat:0,
+      reposto:0
     };
 
     let final=Number(
@@ -1253,16 +1495,21 @@ function calcularResumo(){
         const qtd=
           Number(item.vendido)||0;
 
+        const reposicao=
+          Number(item.reposicao)||0;
+
         const fat=
           qtd*Number(p.preco||0);
 
         faturamento+=fat;
         vendidos+=qtd;
+        repostoTotal+=reposicao;
 
         porTurno[conf.turno]+=fat;
 
         porProduto[p.id].qtd+=qtd;
         porProduto[p.id].fat+=fat;
+        porProduto[p.id].reposto+=reposicao;
 
         if(
           item.ajuste!==null &&
@@ -1277,7 +1524,7 @@ function calcularResumo(){
 
           final=
             final+
-            (Number(item.reposicao)||0)-
+            reposicao-
             qtd;
         }
       }
@@ -1290,6 +1537,7 @@ function calcularResumo(){
     faturamento,
     vendidos,
     estoque,
+    repostoTotal,
     porTurno,
     porProduto
   };
@@ -1762,7 +2010,7 @@ function renderRecepcao(){
 
                   return`
 
-                    <tr>
+                    <tr data-linha-produto="${p.id}">
 
                       <td class="product-name">
                         ${esc(p.nome)}
@@ -1774,7 +2022,7 @@ function renderRecepcao(){
                         </span>
                       </td>
 
-                      <td>
+                      <td data-cel-anterior>
                         <strong>
                           ${anterior}
                         </strong>
@@ -1821,6 +2069,7 @@ function renderRecepcao(){
                       <td>
 
                         <span
+                          data-cel-atual
                           class="stock ${
                             atual<0
                             ?"neg"
@@ -1838,6 +2087,7 @@ function renderRecepcao(){
                       </td>
 
                       <td
+                        data-cel-faturado
                         style="
                           color:#c6ff00;
                           font-weight:800">
@@ -1845,12 +2095,6 @@ function renderRecepcao(){
                       </td>
 
                     </tr>
-
-                    ${
-                      registro.ajuste
-                      ?""
-                      :""
-                    }
 
                   `;
                 }
@@ -1872,7 +2116,7 @@ function renderRecepcao(){
             Itens vendidos
           </span>
 
-          <span class="summary-value">
+          <span class="summary-value" data-total-qtd>
             ${totalQtd}
           </span>
 
@@ -1886,6 +2130,7 @@ function renderRecepcao(){
 
           <span
             class="summary-value"
+            data-total-fat
             style="color:#c6ff00">
             ${dinheiro(totalFat)}
           </span>
@@ -1951,13 +2196,13 @@ function renderRecepcao(){
 
                     return`
 
-                      <tr>
+                      <tr data-linha-ajuste="${p.id}">
 
                         <td class="product-name">
                           ${esc(p.nome)}
                         </td>
 
-                        <td>
+                        <td data-cel-calculado>
                           ${calculado}
                         </td>
 
@@ -1984,6 +2229,7 @@ function renderRecepcao(){
                         </td>
 
                         <td
+                          data-cel-transferido
                           class="stock ok"
                           style="font-weight:900">
 
@@ -2084,7 +2330,7 @@ function renderAdmin(){
     Object.values(
       resumo.porProduto
     )
-    .filter(p=>p.qtd>0)
+    .filter(p=>p.qtd>0||p.reposto>0)
     .sort(
       (a,b)=>b.qtd-a.qtd
     );
@@ -2333,7 +2579,7 @@ function renderAdmin(){
       <div class="card">
 
         <div class="card-title">
-          Produtos mais vendidos
+          Produtos mais vendidos e repostos
         </div>
 
         <div class="table-wrap">
@@ -2344,7 +2590,8 @@ function renderAdmin(){
 
               <tr>
                 <th>Produto</th>
-                <th>Quantidade</th>
+                <th>Vendido</th>
+                <th>Reposto</th>
                 <th>Faturamento</th>
               </tr>
 
@@ -2357,10 +2604,10 @@ function renderAdmin(){
                 ?`
                   <tr>
                     <td
-                      colspan="3"
+                      colspan="4"
                       class="empty">
 
-                      Nenhuma venda registrada.
+                      Nenhuma venda ou reposição registrada.
 
                     </td>
                   </tr>
@@ -2376,6 +2623,10 @@ function renderAdmin(){
 
                       <td>
                         ${p.qtd}
+                      </td>
+
+                      <td>
+                        ${p.reposto}
                       </td>
 
                       <td
@@ -3078,7 +3329,24 @@ function bind(){
     };
   }
 
-  /* Reposição / vendido */
+  /*
+    Reposição / vendido
+
+    FIX PRINCIPAL:
+    Trocado de onchange para oninput.
+
+    onchange só dispara quando o campo perde o foco,
+    e cada chamada disparava um render() que recriava
+    todo o HTML (innerHTML), inclusive o próprio input
+    que estava sendo editado — por isso o valor
+    "sumia"/voltava vazio ao digitar.
+
+    oninput dispara a cada tecla digitada, e agora
+    alterarCampo() não chama mais render() completo:
+    ele atualiza só os números derivados (estoque atual,
+    faturado, totais) sem recriar o campo de texto,
+    então o valor digitado nunca é perdido.
+  */
 
   document
     .querySelectorAll(
@@ -3086,7 +3354,7 @@ function bind(){
     )
     .forEach(input=>{
 
-      input.onchange=e=>{
+      input.oninput=e=>{
 
         alterarCampo(
           Number(
@@ -3100,7 +3368,7 @@ function bind(){
 
     });
 
-  /* Ajuste manual */
+  /* Ajuste manual (mesma correção acima) */
 
   document
     .querySelectorAll(
@@ -3108,7 +3376,7 @@ function bind(){
     )
     .forEach(input=>{
 
-      input.onchange=e=>{
+      input.oninput=e=>{
 
         ajustarEstoque(
           Number(
