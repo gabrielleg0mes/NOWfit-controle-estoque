@@ -1,514 +1,623 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOWFIT CEDRO — Controle de Estoque</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:#0d0d0d;
-  color:#f5f5f5;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-}
-
-button,input,select{font-family:inherit}
-button{cursor:pointer}
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:#161616;
-  border-bottom:1px solid #292929;
-  padding:14px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.logo{
-  width:36px;
-  height:36px;
-  border-radius:9px;
-  background:#c6ff00;
-  color:#0d0d0d;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-}
-
-.brand-title{
-  font-weight:900;
-  letter-spacing:.5px;
-}
-
-.brand-sub{
-  color:#999;
-  font-size:.72rem;
-}
-
-.toggle{
-  display:flex;
-  gap:4px;
-  background:#0d0d0d;
-  padding:4px;
-  border-radius:9px;
-}
-
-.toggle button{
-  border:0;
-  background:transparent;
-  color:#999;
-  padding:9px 14px;
-  border-radius:7px;
-  font-weight:700;
-}
-
-.toggle button.active{
-  background:#c6ff00;
-  color:#0d0d0d;
-}
-
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:18px 15px 60px;
-}
-
-.top{
-  display:flex;
-  align-items:end;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
-  margin-bottom:18px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.label{
-  color:#999;
-  font-size:.68rem;
-  font-weight:800;
-  text-transform:uppercase;
-}
-
-.input,.select{
-  background:#161616;
-  color:#fff;
-  border:1px solid #2a2a2a;
-  border-radius:8px;
-  padding:10px 12px;
-  min-height:40px;
-}
-
-.input:focus,.select:focus{
-  outline:none;
-  border-color:#c6ff00;
-}
-
-.progress{
-  flex:1;
-  min-width:220px;
-}
-
-.progress-text{
-  color:#999;
-  font-size:.75rem;
-  margin-bottom:6px;
-}
-
-.progress-bg{
-  height:6px;
-  background:#292929;
-  border-radius:5px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  background:#c6ff00;
-  transition:.3s;
-}
-
-.turnos{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:8px;
-  margin-bottom:18px;
-}
-
-.turno{
-  background:#161616;
-  color:#fff;
-  border:1px solid #2a2a2a;
-  border-radius:10px;
-  padding:11px 8px;
-  text-align:left;
-}
-
-.turno.active{
-  border-color:#c6ff00;
-  background:#c6ff0015;
-}
-
-.turno-top{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-weight:800;
-  font-size:.78rem;
-}
-
-.dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  border:2px solid #c6ff00;
-}
-
-.dot.done{
-  background:#c6ff00;
-}
-
-.turno-sub{
-  display:block;
-  color:#999;
-  font-size:.67rem;
-  margin-top:3px;
-}
-
-.card{
-  background:#161616;
-  border:1px solid #2a2a2a;
-  border-radius:12px;
-  margin-bottom:16px;
-  overflow:hidden;
-}
-
-.card-title{
-  padding:14px 16px;
-  border-bottom:1px solid #2a2a2a;
-  font-weight:800;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.card-body{
-  padding:16px;
-}
-
-.info{
-  border:1px solid #333;
-  background:#101010;
-  border-radius:9px;
-  padding:12px;
-  margin-bottom:15px;
-  color:#aaa;
-  font-size:.78rem;
-  line-height:1.5;
-}
-
-.info strong{
-  color:#c6ff00;
-}
-
-.table-wrap{
-  overflow-x:auto;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:.82rem;
-}
-
-th{
-  background:#0d0d0d;
-  color:#999;
-  font-size:.67rem;
-  text-transform:uppercase;
-  padding:10px;
-  text-align:left;
-  white-space:nowrap;
-}
-
-td{
-  padding:9px 10px;
-  border-top:1px solid #222;
-  white-space:nowrap;
-}
-
-.product-name{
-  font-weight:700;
-}
-
-.tag{
-  background:#242424;
-  color:#aaa;
-  padding:4px 7px;
-  border-radius:5px;
-  font-size:.65rem;
-}
-
-.number{
-  width:65px;
-  background:#0d0d0d;
-  color:#fff;
-  border:1px solid #333;
-  border-radius:6px;
-  padding:7px;
-  text-align:center;
-}
-
-.number:focus{
-  outline:none;
-  border-color:#c6ff00;
-}
-
-.stock{
-  font-weight:900;
-}
-
-.ok{
-  color:#c6ff00;
-}
-
-.neg{
-  color:#ff4d4d;
-}
-
-.summary{
-  display:flex;
-  gap:28px;
-  flex-wrap:wrap;
-  padding:15px 18px;
-  background:#161616;
-  border:1px solid #2a2a2a;
-  border-radius:12px;
-  margin-bottom:16px;
-}
-
-.summary-label{
-  display:block;
-  color:#999;
-  font-size:.68rem;
-  text-transform:uppercase;
-  font-weight:800;
-  margin-bottom:4px;
-}
-
-.summary-value{
-  font-size:1.25rem;
-  font-weight:900;
-}
-
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-}
-
-.btn{
-  border:0;
-  border-radius:8px;
-  padding:12px 17px;
-  font-weight:800;
-  font-size:.82rem;
-}
-
-.primary{
-  background:#c6ff00;
-  color:#0d0d0d;
-}
-
-.whatsapp{
-  background:#25d366;
-  color:#06150a;
-}
-
-.finish{
-  background:#00e0a4;
-  color:#061712;
-}
-
-.secondary{
-  background:#292929;
-  color:#fff;
-}
-
-.danger{
-  background:#ff4d4d18;
-  color:#ff6666;
-  border:1px solid #ff4d4d44;
-}
-
-.admin-tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:18px;
-  flex-wrap:wrap;
-}
-
-.kpis{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.kpi{
-  background:#161616;
-  border:1px solid #2a2a2a;
-  border-radius:12px;
-  padding:18px;
-}
-
-.kpi-label{
-  color:#999;
-  font-size:.68rem;
-  text-transform:uppercase;
-  font-weight:800;
-  margin-bottom:7px;
-}
-
-.kpi-value{
-  font-size:1.5rem;
-  font-weight:900;
-}
-
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:#000c;
-  z-index:300;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.modal{
-  width:100%;
-  max-width:470px;
-  background:#161616;
-  border:1px solid #333;
-  border-radius:12px;
-  padding:20px;
-}
-
-.form-grid{
-  display:grid;
-  gap:13px;
-}
-
-.modal-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:5px;
-}
-
-.toast{
-  position:fixed;
-  z-index:500;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#c6ff00;
-  color:#0d0d0d;
-  padding:12px 18px;
-  border-radius:9px;
-  font-size:.82rem;
-  font-weight:800;
-  box-shadow:0 10px 30px #0008;
-  text-align:center;
-  max-width:90%;
-}
-
-.empty{
-  text-align:center;
-  color:#888;
-  padding:30px;
-}
-
-.final-info{
-  background:#00e0a415;
-  border:1px solid #00e0a455;
-  color:#aaa;
-  border-radius:9px;
-  padding:12px;
-  margin-bottom:15px;
-  font-size:.78rem;
-}
-
-.final-info strong{
-  color:#00e0a4;
-}
-
-@media(max-width:800px){
-  .turnos{
-    grid-template-columns:repeat(3,1fr);
-  }
-
-  .kpis{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:560px){
-  .header{
-    align-items:flex-start;
-  }
-
-  .toggle{
-    width:100%;
-  }
-
-  .toggle button{
-    flex:1;
-  }
-
-  .turnos{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .container{
-    padding:13px 9px 50px;
-  }
-
-  .mobile-hide{
-    display:none;
-  }
-
-  .actions .btn{
-    width:100%;
-  }
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOWFIT CEDRO — Controle de Estoque & Turnos</title>
+
+  <!-- Lib do Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    button, input, select { font-family: inherit; }
+    button { cursor: pointer; }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #161616;
+      border-bottom: 1px solid #292929;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #c6ff00;
+      color: #0d0d0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .brand-title {
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+
+    .brand-sub {
+      color: #999;
+      font-size: .72rem;
+    }
+
+    .toggle {
+      display: flex;
+      gap: 4px;
+      background: #0d0d0d;
+      padding: 4px;
+      border-radius: 9px;
+    }
+
+    .toggle button {
+      border: 0;
+      background: transparent;
+      color: #999;
+      padding: 9px 14px;
+      border-radius: 7px;
+      font-weight: 700;
+    }
+
+    .toggle button.active {
+      background: #c6ff00;
+      color: #0d0d0d;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 18px 15px 60px;
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .label {
+      color: #999;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .input, .select {
+      background: #161616;
+      color: #fff;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      min-height: 40px;
+    }
+
+    .input:focus, .select:focus {
+      outline: none;
+      border-color: #c6ff00;
+    }
+
+    .progress {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .progress-text {
+      color: #999;
+      font-size: .75rem;
+      margin-bottom: 6px;
+    }
+
+    .progress-bg {
+      height: 6px;
+      background: #292929;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #c6ff00;
+      transition: .3s;
+    }
+
+    .turnos {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .turno {
+      background: #161616;
+      color: #fff;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 11px 8px;
+      text-align: left;
+    }
+
+    .turno.active {
+      border-color: #c6ff00;
+      background: #c6ff0015;
+    }
+
+    .turno-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 800;
+      font-size: .78rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 2px solid #c6ff00;
+    }
+
+    .dot.done {
+      background: #c6ff00;
+    }
+
+    .turno-sub {
+      display: block;
+      color: #999;
+      font-size: .67rem;
+      margin-top: 3px;
+    }
+
+    .card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .card-title {
+      padding: 14px 16px;
+      border-bottom: 1px solid #2a2a2a;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .alert-banner {
+      display: none;
+      background: #ff4d4d15;
+      border: 1px solid #ff4d4d88;
+      color: #ff6666;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-size: .85rem;
+    }
+
+    .alert-banner.active {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+
+    th {
+      background: #0d0d0d;
+      color: #999;
+      font-size: .67rem;
+      text-transform: uppercase;
+      padding: 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 10px;
+      border-top: 1px solid #222;
+      white-space: nowrap;
+    }
+
+    .product-name {
+      font-weight: 700;
+    }
+
+    .tag {
+      background: #242424;
+      color: #aaa;
+      padding: 4px 7px;
+      border-radius: 5px;
+      font-size: .65rem;
+    }
+
+    .number {
+      width: 65px;
+      background: #0d0d0d;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 7px;
+      text-align: center;
+    }
+
+    .number:focus {
+      outline: none;
+      border-color: #c6ff00;
+    }
+
+    .number:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .stock {
+      font-weight: 900;
+    }
+
+    .ok {
+      color: #c6ff00;
+    }
+
+    .neg {
+      color: #ff4d4d;
+    }
+
+    .summary {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding: 15px 18px;
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-label {
+      display: block;
+      color: #999;
+      font-size: .68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 17px;
+      font-weight: 800;
+      font-size: .82rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .primary { background: #c6ff00; color: #0d0d0d; }
+    .whatsapp { background: #25d366; color: #06150a; }
+    .finish { background: #00e0a4; color: #061712; }
+    .reopen { background: #eab308; color: #1c1917; }
+    .secondary { background: #292929; color: #fff; }
+    .excel { background: #0d9488; color: #fff; }
+    .copy-btn { background: #0284c7; color: #fff; }
+    .danger { background: #ff4d4d18; color: #ff6666; border: 1px solid #ff4d4d44; }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .kpi-label {
+      color: #999;
+      font-size: .68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: #000c;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 470px;
+      background: #161616;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 13px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 500;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #c6ff00;
+      color: #0d0d0d;
+      padding: 12px 18px;
+      border-radius: 9px;
+      font-size: .82rem;
+      font-weight: 800;
+      box-shadow: 0 10px 30px #0008;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    .history-box {
+      background: #0d0d0d;
+      color: #aaa;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: .8rem;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #222;
+    }
+
+    .history-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .assinatura-area { display: none; }
+
+    /* ============================================================
+       ESTILOS DE IMPRESSÃO PROFISSIONAL (VERDE ESCURO + PRETO)
+    ============================================================ */
+    @media print {
+      @page {
+        margin: 1.2cm;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 10pt;
+      }
+
+      .header, .toggle, .actions, .turnos, .admin-tabs, .btn, .alert-banner, .progress, .top {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+
+      .card {
+        border: 1px solid #004d25 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin-bottom: 12px !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+      }
+
+      .card-title {
+        background: #004d25 !important;
+        color: #ffffff !important;
+        border-bottom: none !important;
+        padding: 8px 12px !important;
+        font-size: 11pt !important;
+      }
+
+      .card-title span {
+        color: #ffffff !important;
+      }
+
+      .card-body {
+        padding: 10px !important;
+      }
+
+      /* Tabela de Impressão */
+      table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+      }
+
+      th {
+        background-color: #f0f7f2 !important;
+        color: #004d25 !important;
+        border: 1px solid #004d25 !important;
+        font-weight: bold !important;
+        font-size: 8.5pt !important;
+        padding: 6px !important;
+      }
+
+      td {
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        padding: 5px 6px !important;
+        font-size: 9pt !important;
+        background: #ffffff !important;
+      }
+
+      .product-name {
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      .tag {
+        background: transparent !important;
+        color: #333333 !important;
+        font-size: 7.5pt !important;
+        padding: 0 !important;
+        display: block !important;
+        font-weight: normal !important;
+      }
+
+      .number {
+        border: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+        font-size: 9pt !important;
+        padding: 0 !important;
+        text-align: center !important;
+        width: auto !important;
+      }
+
+      .ok, .stock {
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      .neg {
+        color: #cc0000 !important;
+        font-weight: bold !important;
+      }
+
+      .summary {
+        background: #f0f7f2 !important;
+        border: 1px solid #004d25 !important;
+        border-radius: 6px !important;
+        padding: 10px 14px !important;
+        margin-bottom: 15px !important;
+      }
+
+      .summary-label {
+        color: #004d25 !important;
+        font-weight: bold !important;
+      }
+
+      .summary-value {
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      .assinatura-area {
+        display: flex !important;
+        justify-content: space-between;
+        margin-top: 40px !important;
+        padding-top: 10px;
+        color: #000000 !important;
+      }
+
+      .assinatura-box {
+        text-align: center;
+        width: 45%;
+        border-top: 1px solid #000000;
+        padding-top: 5px;
+        font-size: 9pt;
+      }
+    }
+
+    @media(max-width:800px) {
+      .turnos { grid-template-columns: repeat(3, 1fr); }
+      .kpis { grid-template-columns: 1fr; }
+    }
+
+    @media(max-width:560px) {
+      .header { align-items: flex-start; }
+      .toggle { width: 100%; }
+      .toggle button { flex: 1; }
+      .turnos { grid-template-columns: repeat(2, 1fr); }
+      .container { padding: 13px 9px 50px; }
+      .actions .btn { width: 100%; }
+    }
+  </style>
 </head>
-
 <body>
 
 <div id="app"></div>
@@ -517,3097 +626,877 @@ td{
 "use strict";
 
 /* ============================================================
-   PRODUTOS PADRÃO
+   CONFIGURAÇÃO DO SUPABASE
 ============================================================ */
-
-const PRODUTOS_PADRAO = [
-  {id:1,nome:"Coca-Cola Zero",cat:"Bebida",preco:3.99,estoqueInicial:11},
-  {id:2,nome:"YoPRO Coco e Batata Doce",cat:"Suplemento",preco:10,estoqueInicial:6},
-  {id:3,nome:"YoPRO Frutas Vermelhas",cat:"Suplemento",preco:10,estoqueInicial:2},
-  {id:4,nome:"YoPRO Chocolate",cat:"Suplemento",preco:10,estoqueInicial:5},
-  {id:5,nome:"YoPRO Energy Boost",cat:"Suplemento",preco:10,estoqueInicial:3},
-  {id:6,nome:"Monster Zero Açúcar",cat:"Energético",preco:11.99,estoqueInicial:31},
-  {id:7,nome:"Monster Taurina",cat:"Energético",preco:11.99,estoqueInicial:5},
-  {id:8,nome:"Monster Ultra Violet",cat:"Energético",preco:11.99,estoqueInicial:11},
-  {id:9,nome:"Monster Ultra",cat:"Energético",preco:11.99,estoqueInicial:8},
-  {id:10,nome:"Leão Com Gás",cat:"Bebida",preco:4.99,estoqueInicial:14},
-  {id:11,nome:"Powerade Uva",cat:"Isotônico",preco:5.99,estoqueInicial:1},
-  {id:12,nome:"Powerade Mix de Frutas",cat:"Isotônico",preco:5.99,estoqueInicial:5},
-  {id:13,nome:"Powerade Laranja",cat:"Isotônico",preco:5.99,estoqueInicial:4},
-  {id:14,nome:"Água Com Gás",cat:"Bebida",preco:2.99,estoqueInicial:13},
-  {id:15,nome:"Água Cristal",cat:"Bebida",preco:2.99,estoqueInicial:16}
-];
+const SUPABASE_URL = 'https://clxmcteqxmegyuzbeqxu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNseG1jdGVxeG1lZ3l1emJlcXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MzAyNjYsImV4cCI6MjEwNDEwNjI2Nn0.0Sh9S5H9_nBNnDbz3P2Ux1n4itoxvSDZtdHA9crE6aE';
+const db = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 /* ============================================================
-   TURNOS
+   PRODUTOS PADRÃO E TURNOS
 ============================================================ */
+const PRODUTOS_PADRAO = [
+  {id:1, nome:"Coca-Cola Zero", cat:"Bebida", preco:3.99, estoqueInicial:11},
+  {id:2, nome:"YoPRO Coco e Batata Doce", cat:"Suplemento", preco:10.00, estoqueInicial:6},
+  {id:3, nome:"YoPRO Frutas Vermelhas", cat:"Suplemento", preco:10.00, estoqueInicial:2},
+  {id:4, nome:"YoPRO Chocolate", cat:"Suplemento", preco:10.00, estoqueInicial:5},
+  {id:5, nome:"YoPRO Energy Boost", cat:"Suplemento", preco:10.00, estoqueInicial:3},
+  {id:6, nome:"Monster Zero Açúcar", cat:"Energético", preco:11.99, estoqueInicial:31},
+  {id:7, nome:"Monster Taurina", cat:"Energético", preco:11.99, estoqueInicial:5},
+  {id:8, nome:"Monster Ultra Violet", cat:"Energético", preco:11.99, estoqueInicial:11},
+  {id:9, nome:"Monster Ultra", cat:"Energético", preco:11.99, estoqueInicial:8},
+  {id:10, nome:"Leão Com Gás", cat:"Bebida", preco:4.99, estoqueInicial:14},
+  {id:11, nome:"Powerade Uva", cat:"Isotônico", preco:5.99, estoqueInicial:1},
+  {id:12, nome:"Powerade Mix de Frutas", cat:"Isotônico", preco:5.99, estoqueInicial:5},
+  {id:13, nome:"Powerade Laranja", cat:"Isotônico", preco:5.99, estoqueInicial:4},
+  {id:14, nome:"Água Com Gás", cat:"Bebida", preco:2.99, estoqueInicial:13},
+  {id:15, nome:"Água Cristal", cat:"Bebida", preco:2.99, estoqueInicial:16}
+];
 
 const CONFERENCIAS = [
-  {id:"m_entrada",turno:"Manhã",tipo:"Entrada",hora:"05:00"},
-  {id:"m_saida",turno:"Manhã",tipo:"Saída",hora:"11:00"},
-  {id:"t_entrada",turno:"Tarde",tipo:"Entrada",hora:"11:00"},
-  {id:"t_saida",turno:"Tarde",tipo:"Saída",hora:"17:00"},
-  {id:"n_entrada",turno:"Noite",tipo:"Entrada",hora:"17:00"},
-  {id:"n_saida",turno:"Noite",tipo:"Saída",hora:"22:00"}
+  {id:"m_entrada", turno:"Manhã", tipo:"Entrada", hora:"05:00"},
+  {id:"m_saida", turno:"Manhã", tipo:"Saída", hora:"11:00"},
+  {id:"t_entrada", turno:"Tarde", tipo:"Entrada", hora:"11:00"},
+  {id:"t_saida", turno:"Tarde", tipo:"Saída", hora:"17:00"},
+  {id:"n_entrada", turno:"Noite", tipo:"Entrada", hora:"17:00"},
+  {id:"n_saida", turno:"Noite", tipo:"Saída", hora:"22:00"}
 ];
 
-const RESPONSAVEIS = [
-  "Gabrielle",
-  "Adryel",
-  "Hugo"
-];
+const RESPONSAVEIS = ["Gabrielle", "Adryel", "Hugo"];
 
 /* ============================================================
-   ESTADO
+   ESTADO DA APLICAÇÃO
 ============================================================ */
-
 let state = {
-  modo:"recepcao",
-  abaAdmin:"resumo",
-  data:hoje(),
-  conf:0,
-  produtos:carregarProdutos(),
-  dia:null,
-  modal:null,
-  toast:null
+  modo: "recepcao",
+  abaAdmin: "resumo",
+  data: hoje(),
+  conf: 0,
+  produtos: carregarProdutos(),
+  dia: null,
+  modal: null,
+  toast: null,
+  logs: carregarLogs()
 };
 
 /* ============================================================
    UTILITÁRIOS
 ============================================================ */
-
-function hoje(){
-  const d=new Date();
-  const local=new Date(
-    d.getTime()-d.getTimezoneOffset()*60000
-  );
-
-  return local.toISOString().slice(0,10);
+function hoje() {
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
 }
 
-function dinheiro(v){
-  return Number(v||0).toLocaleString(
-    "pt-BR",
-    {
-      style:"currency",
-      currency:"BRL"
-    }
-  );
+function dinheiro(v) {
+  return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-function dataBR(v){
-  if(!v)return"—";
-
-  const [a,m,d]=v.split("-");
-
+function dataBR(v) {
+  if (!v) return "—";
+  const [a, m, d] = v.split("-");
   return `${d}/${m}/${a}`;
 }
 
-function esc(v){
-  return String(v??"")
-    .replace(/&/g,"&amp;")
-    .replace(/"/g,"&quot;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
+function esc(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function carregarLogs() {
+  try {
+    return JSON.parse(localStorage.getItem("nowfit_logs")) || [];
+  } catch(e) { return []; }
+}
+
+function registrarLog(msg) {
+  const timestamp = new Date().toLocaleTimeString("pt-BR");
+  state.logs.unshift(`[${timestamp}] ${msg}`);
+  localStorage.setItem("nowfit_logs", JSON.stringify(state.logs.slice(0, 50)));
 }
 
 /* ============================================================
-   PRODUTOS
+   GERENCIAMENTO DE PRODUTOS E DIAS
 ============================================================ */
-
-function carregarProdutos(){
-
-  try{
-
-    const raw=
-      localStorage.getItem(
-        "nowfit_cedro_produtos"
-      );
-
-    if(raw){
-
-      const produtos=
-        JSON.parse(raw);
-
-      if(Array.isArray(produtos)){
-        return produtos;
-      }
+function carregarProdutos() {
+  try {
+    const raw = localStorage.getItem("nowfit_cedro_produtos");
+    if (raw) {
+      const produtos = JSON.parse(raw);
+      if (Array.isArray(produtos)) return produtos;
     }
+  } catch (e) {}
 
-  }catch(e){}
-
-  const copia=
-    JSON.parse(
-      JSON.stringify(PRODUTOS_PADRAO)
-    );
-
-  localStorage.setItem(
-    "nowfit_cedro_produtos",
-    JSON.stringify(copia)
-  );
-
+  const copia = JSON.parse(JSON.stringify(PRODUTOS_PADRAO));
+  localStorage.setItem("nowfit_cedro_produtos", JSON.stringify(copia));
   return copia;
 }
 
-function salvarProdutos(){
-
-  localStorage.setItem(
-    "nowfit_cedro_produtos",
-    JSON.stringify(state.produtos)
-  );
+function salvarProdutos() {
+  localStorage.setItem("nowfit_cedro_produtos", JSON.stringify(state.produtos));
 }
 
-/* ============================================================
-   DIA
-============================================================ */
-
-function novoRegistro(){
-
-  const produtos={};
-
-  state.produtos.forEach(p=>{
-
-    produtos[p.id]={
-      reposicao:"",
-      vendido:"",
-      ajuste:null
-    };
-
+function novoRegistro() {
+  const produtos = {};
+  state.produtos.forEach(p => {
+    produtos[p.id] = { reposicao: "", vendido: "", ajuste: null };
   });
-
-  return {
-    responsavel:"",
-    produtos,
-    finalizado:false,
-    finalizadoEm:null
-  };
+  return { responsavel: "", produtos, finalizado: false, finalizadoEm: null };
 }
 
-function novoDia(){
-
-  const dia={
-    versao:3,
-
-    /*
-      IMPORTANTE:
-      Cada dia guarda seu próprio estoque inicial.
-      Alterar produtos amanhã NÃO altera dias antigos.
-    */
-
-    estoqueInicial:{},
-
-    conferencias:[]
-  };
-
-  state.produtos.forEach(p=>{
-
-    dia.estoqueInicial[p.id]=
-      Number(p.estoqueInicial||0);
-
+function novoDia() {
+  const dia = { versao: 3, estoqueInicial: {}, conferencias: [] };
+  state.produtos.forEach(p => {
+    dia.estoqueInicial[p.id] = Number(p.estoqueInicial || 0);
   });
-
-  for(let i=0;i<CONFERENCIAS.length;i++){
-    dia.conferencias.push(
-      novoRegistro()
-    );
+  for (let i = 0; i < CONFERENCIAS.length; i++) {
+    dia.conferencias.push(novoRegistro());
   }
-
   return dia;
 }
 
-function chaveDia(){
-
-  return "nowfit_cedro_dia:"+state.data;
+function chaveDia() {
+  return "nowfit_cedro_dia:" + state.data;
 }
 
-function carregarDia(){
-
-  try{
-
-    const raw=
-      localStorage.getItem(
-        chaveDia()
-      );
-
-    if(raw){
-
-      const dia=
-        JSON.parse(raw);
-
-      if(!dia.estoqueInicial){
-        dia.estoqueInicial={};
+function carregarDia() {
+  try {
+    const raw = localStorage.getItem(chaveDia());
+    if (raw) {
+      const dia = JSON.parse(raw);
+      if (!dia.estoqueInicial) dia.estoqueInicial = {};
+      if (!Array.isArray(dia.conferencias)) dia.conferencias = [];
+      while (dia.conferencias.length < CONFERENCIAS.length) {
+        dia.conferencias.push(novoRegistro());
       }
-
-      if(!Array.isArray(dia.conferencias)){
-        dia.conferencias=[];
-      }
-
-      while(
-        dia.conferencias.length<
-        CONFERENCIAS.length
-      ){
-        dia.conferencias.push(
-          novoRegistro()
-        );
-      }
-
-      /*
-        Adiciona produtos novos sem apagar
-        os produtos antigos do histórico.
-      */
-
-      state.produtos.forEach(p=>{
-
-        if(
-          dia.estoqueInicial[p.id]===
-          undefined
-        ){
-
-          dia.estoqueInicial[p.id]=
-            Number(p.estoqueInicial||0);
+      state.produtos.forEach(p => {
+        if (dia.estoqueInicial[p.id] === undefined) {
+          dia.estoqueInicial[p.id] = Number(p.estoqueInicial || 0);
         }
-
-        dia.conferencias.forEach(reg=>{
-
-          if(!reg.produtos){
-            reg.produtos={};
+        dia.conferencias.forEach(reg => {
+          if (!reg.produtos) reg.produtos = {};
+          if (!reg.produtos[p.id]) {
+            reg.produtos[p.id] = { reposicao: "", vendido: "", ajuste: null };
           }
-
-          if(!reg.produtos[p.id]){
-
-            reg.produtos[p.id]={
-              reposicao:"",
-              vendido:"",
-              ajuste:null
-            };
-          }
-
         });
-
       });
-
       return dia;
     }
-
-  }catch(e){}
-
+  } catch (e) {}
   return novoDia();
 }
 
-function salvarDia(){
+function salvarDia() {
+  localStorage.setItem(chaveDia(), JSON.stringify(state.dia));
+}
 
-  localStorage.setItem(
-    chaveDia(),
-    JSON.stringify(state.dia)
-  );
+state.dia = carregarDia();
+
+/* ============================================================
+   CÁLCULOS DE ESTOQUE
+============================================================ */
+function estoqueAnterior(index, pid) {
+  if (index === 0) {
+    return Number(state.dia.estoqueInicial[pid] || 0);
+  }
+  return estoqueFinal(index - 1, pid);
+}
+
+function estoqueFinal(index, pid) {
+  const anterior = estoqueAnterior(index, pid);
+  const registro = state.dia.conferencias[index];
+  const item = registro?.produtos?.[pid] || {};
+
+  if (item.ajuste !== null && item.ajuste !== undefined && item.ajuste !== "") {
+    return Number(item.ajuste) || 0;
+  }
+
+  const reposicao = Number(item.reposicao) || 0;
+  const vendido = Number(item.vendido) || 0;
+  return anterior + reposicao - vendido;
 }
 
 /* ============================================================
-   ESTOQUE
+   AÇÕES E MANIPULAÇÃO DE TURNOS
 ============================================================ */
+function finalizarTurno() {
+  const index = state.conf;
+  const registro = state.dia.conferencias[index];
 
-/*
-  ESTA É A PARTE MAIS IMPORTANTE.
-
-  O sistema NÃO pede para a pessoa digitar
-  novamente o estoque anterior.
-
-  Exemplo:
-
-  Turno 1:
-  anterior 20
-  reposição 5
-  vendido 8
-  atual = 17
-
-  Finaliza turno.
-
-  Turno 2:
-  anterior = 17 automaticamente.
-
-  Se:
-  reposição 3
-  vendido 4
-
-  atual = 16
-
-  Finaliza.
-
-  Turno 3:
-  anterior = 16 automaticamente.
-*/
-
-function estoqueAnterior(index,pid){
-
-  /*
-    Primeiro turno:
-    pega o estoque inicial salvo para aquele dia.
-  */
-
-  if(index===0){
-
-    return Number(
-      state.dia.estoqueInicial[pid]||0
-    );
-  }
-
-  /*
-    Qualquer turno depois do primeiro:
-    pega o estoque final do turno anterior.
-  */
-
-  return estoqueFinal(
-    index-1,
-    pid
-  );
-}
-
-function estoqueFinal(index,pid){
-
-  const anterior=
-    estoqueAnterior(
-      index,
-      pid
-    );
-
-  const registro=
-    state.dia.conferencias[index];
-
-  const item=
-    registro?.produtos?.[pid]||{};
-
-  /*
-    AJUSTE MANUAL
-
-    Se alguém encontrou fisicamente uma quantidade
-    diferente da calculada, pode usar o campo de ajuste.
-
-    Esse valor passa a ser o estoque final.
-  */
-
-  if(
-    item.ajuste!==null &&
-    item.ajuste!==undefined &&
-    item.ajuste!==""
-  ){
-
-    return Number(item.ajuste)||0;
-  }
-
-  const reposicao=
-    Number(item.reposicao)||0;
-
-  const vendido=
-    Number(item.vendido)||0;
-
-  return (
-    anterior+
-    reposicao-
-    vendido
-  );
-}
-
-/* ============================================================
-   FINALIZAR TURNO
-============================================================ */
-
-function finalizarTurno(){
-
-  const index=state.conf;
-
-  const registro=
-    state.dia.conferencias[index];
-
-  if(!registro.responsavel){
-
-    toast(
-      "Selecione o responsável antes de finalizar o turno.",
-      true
-    );
-
+  if (!registro.responsavel) {
+    toast("Selecione o responsável antes de finalizar o turno.", true);
     return;
   }
 
-  /*
-    Marca o turno como finalizado.
-  */
-
-  registro.finalizado=true;
-
-  registro.finalizadoEm=
-    new Date().toISOString();
-
-  /*
-    Salva primeiro.
-    Assim o próximo turno já consegue
-    enxergar os valores calculados.
-  */
-
+  registro.finalizado = true;
+  registro.finalizadoEm = new Date().toISOString();
   salvarDia();
 
-  /*
-    Se ainda houver próximo turno,
-    abre automaticamente.
-  */
+  registrarLog(`Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) finalizado por ${registro.responsavel}.`);
 
-  if(index<CONFERENCIAS.length-1){
-
-    state.conf=index+1;
-
-    toast(
-      "Turno finalizado! O estoque foi transferido para o próximo turno."
-    );
-
-    render();
-
-    /*
-      Rola para o topo para a pessoa já começar
-      o próximo turno.
-    */
-
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-
-  }else{
-
-    /*
-      Último turno do dia.
-    */
-
-    toast(
-      "Último turno finalizado! Dia encerrado."
-    );
-
-    render();
+  if (index < CONFERENCIAS.length - 1) {
+    state.conf = index + 1;
+    toast("Turno finalizado! Avançando para o próximo turno.");
+  } else {
+    toast("Último turno finalizado! Dia encerrado.");
   }
+  render();
 }
 
-/* ============================================================
-   ALTERAR CAMPOS
-============================================================ */
+function reabrirTurno() {
+  const index = state.conf;
+  const registro = state.dia.conferencias[index];
 
-function alterarCampo(
-  pid,
-  campo,
-  valor
-){
-
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  if(!registro.produtos[pid]){
-
-    registro.produtos[pid]={
-      reposicao:"",
-      vendido:"",
-      ajuste:null
-    };
-  }
-
-  registro.produtos[pid][campo]=valor;
-
-  /*
-    Salva imediatamente.
-  */
-
+  registro.finalizado = false;
+  registro.finalizadoEm = null;
   salvarDia();
 
-  /*
-    FIX: não re-renderiza a tabela inteira a cada tecla digitada.
-    Isso recriava os <input> via innerHTML e fazia o campo
-    parecer "voltar vazio" enquanto a pessoa ainda digitava.
-    Apenas os valores dependentes (estoque atual/faturado dessa
-    linha e os totais) são atualizados no DOM, sem tocar no
-    próprio campo que está sendo editado.
-  */
+  registrarLog(`Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) foi REABERTO.`);
+  toast("Turno reaberto para edições!");
+  render();
+}
 
+function alterarCampo(pid, campo, valor) {
+  const registro = state.dia.conferencias[state.conf];
+  if (registro.finalizado) return;
+
+  if (!registro.produtos[pid]) {
+    registro.produtos[pid] = { reposicao: "", vendido: "", ajuste: null };
+  }
+  registro.produtos[pid][campo] = valor;
+  salvarDia();
   atualizarLinhaProduto(pid);
   atualizarTotais();
 }
 
-function alterarResponsavel(valor){
-
-  state.dia
-    .conferencias[state.conf]
-    .responsavel=valor;
-
+function alterarResponsavel(valor) {
+  state.dia.conferencias[state.conf].responsavel = valor;
   salvarDia();
 }
 
-/* ============================================================
-   AJUSTE MANUAL
-============================================================ */
-
-function ajustarEstoque(pid,valor){
-
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  if(!registro.produtos[pid]){
-
-    registro.produtos[pid]={
-      reposicao:"",
-      vendido:"",
-      ajuste:null
-    };
+function ajustarEstoque(pid, valor) {
+  const registro = state.dia.conferencias[state.conf];
+  if (!registro.produtos[pid]) {
+    registro.produtos[pid] = { reposicao: "", vendido: "", ajuste: null };
   }
-
-  if(valor===""){
-    registro.produtos[pid].ajuste=null;
-  }else{
-    registro.produtos[pid].ajuste=
-      Number(valor);
-  }
-
+  registro.produtos[pid].ajuste = valor === "" ? null : Number(valor);
   salvarDia();
-
-  /*
-    FIX: mesmo motivo do alterarCampo — evita re-render total
-    enquanto a pessoa está digitando o ajuste físico.
-  */
-
   atualizarLinhaProduto(pid);
   atualizarLinhaAjuste(pid);
   atualizarTotais();
 }
 
 /* ============================================================
-   ATUALIZAÇÃO PARCIAL DO DOM (sem perder foco do input)
+   ATUALIZAÇÕES DINÂMICAS DO DOM
 ============================================================ */
+function atualizarLinhaProduto(pid) {
+  const registro = state.dia.conferencias[state.conf];
+  const item = registro.produtos[pid] || {};
+  const atual = estoqueFinal(state.conf, pid);
+  const vendido = Number(item.vendido) || 0;
+  const produto = state.produtos.find(p => p.id === pid);
+  const faturado = vendido * Number(produto?.preco || 0);
 
-function atualizarLinhaProduto(pid){
+  const linha = document.querySelector(`[data-linha-produto="${pid}"]`);
+  if (!linha) return;
 
-  const registro=
-    state.dia.conferencias[state.conf];
+  const celAnterior = linha.querySelector("[data-cel-anterior]");
+  if (celAnterior) celAnterior.textContent = estoqueAnterior(state.conf, pid);
 
-  const item=
-    registro.produtos[pid]||{};
-
-  const atual=
-    estoqueFinal(state.conf,pid);
-
-  const vendido=
-    Number(item.vendido)||0;
-
-  const produto=
-    state.produtos.find(p=>p.id===pid);
-
-  const faturado=
-    vendido*Number(produto?.preco||0);
-
-  const linha=
-    document.querySelector(
-      `[data-linha-produto="${pid}"]`
-    );
-
-  if(!linha)return;
-
-  const celAnterior=
-    linha.querySelector(
-      "[data-cel-anterior]"
-    );
-
-  if(celAnterior){
-
-    celAnterior.textContent=
-      estoqueAnterior(state.conf,pid);
+  const celAtual = linha.querySelector("[data-cel-atual]");
+  if (celAtual) {
+    celAtual.textContent = atual;
+    celAtual.classList.toggle("neg", atual < 0);
+    celAtual.classList.toggle("ok", atual >= 0);
   }
 
-  const celAtual=
-    linha.querySelector(
-      "[data-cel-atual]"
-    );
-
-  if(celAtual){
-
-    celAtual.textContent=atual;
-
-    celAtual.classList.toggle(
-      "neg",
-      atual<0
-    );
-
-    celAtual.classList.toggle(
-      "ok",
-      atual>=0
-    );
-  }
-
-  const celFaturado=
-    linha.querySelector(
-      "[data-cel-faturado]"
-    );
-
-  if(celFaturado){
-
-    celFaturado.textContent=
-      dinheiro(faturado);
-  }
+  const celFaturado = linha.querySelector("[data-cel-faturado]");
+  if (celFaturado) celFaturado.textContent = dinheiro(faturado);
 }
 
-function atualizarLinhaAjuste(pid){
+function atualizarLinhaAjuste(pid) {
+  const linha = document.querySelector(`[data-linha-ajuste="${pid}"]`);
+  if (!linha) return;
 
-  const linha=
-    document.querySelector(
-      `[data-linha-ajuste="${pid}"]`
-    );
+  const registro = state.dia.conferencias[state.conf];
+  const item = registro.produtos[pid] || {};
+  const anterior = estoqueAnterior(state.conf, pid);
+  const reposicao = Number(item.reposicao) || 0;
+  const vendido = Number(item.vendido) || 0;
+  const calculado = anterior + reposicao - vendido;
 
-  if(!linha)return;
+  const calculadoEl = linha.querySelector("[data-cel-calculado]");
+  if (calculadoEl) calculadoEl.textContent = calculado;
 
-  const calculadoEl=
-    linha.querySelector(
-      "[data-cel-calculado]"
-    );
+  const ajuste = item.ajuste;
+  const transferido = (ajuste !== null && ajuste !== undefined && ajuste !== "") ? Number(ajuste) : calculado;
 
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  const item=
-    registro.produtos[pid]||{};
-
-  const calculado=
-    (function(){
-
-      const anterior=
-        estoqueAnterior(state.conf,pid);
-
-      const reposicao=
-        Number(item.reposicao)||0;
-
-      const vendido=
-        Number(item.vendido)||0;
-
-      return anterior+reposicao-vendido;
-    })();
-
-  if(calculadoEl){
-    calculadoEl.textContent=calculado;
-  }
-
-  const ajuste=item.ajuste;
-
-  const transferido=
-    ajuste!==null &&
-    ajuste!==undefined &&
-    ajuste!==""
-    ?Number(ajuste)
-    :calculado;
-
-  const transferidoEl=
-    linha.querySelector(
-      "[data-cel-transferido]"
-    );
-
-  if(transferidoEl){
-    transferidoEl.textContent=transferido;
-  }
+  const transferidoEl = linha.querySelector("[data-cel-transferido]");
+  if (transferidoEl) transferidoEl.textContent = transferido;
 }
 
-function atualizarTotais(){
+function atualizarTotais() {
+  const registro = state.dia.conferencias[state.conf];
+  let totalQtd = 0;
+  let totalFat = 0;
 
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  let totalQtd=0;
-  let totalFat=0;
-
-  state.produtos.forEach(p=>{
-
-    const item=
-      registro.produtos[p.id]||{};
-
-    const qtd=
-      Number(item.vendido)||0;
-
-    totalQtd+=qtd;
-
-    totalFat+=
-      qtd*Number(p.preco||0);
+  state.produtos.forEach(p => {
+    const item = registro.produtos[p.id] || {};
+    const qtd = Number(item.vendido) || 0;
+    totalQtd += qtd;
+    totalFat += qtd * Number(p.preco || 0);
   });
 
-  const qtdEl=
-    document.querySelector(
-      "[data-total-qtd]"
-    );
+  const qtdEl = document.querySelector("[data-total-qtd]");
+  if (qtdEl) qtdEl.textContent = totalQtd;
 
-  if(qtdEl){
-    qtdEl.textContent=totalQtd;
-  }
-
-  const fatEl=
-    document.querySelector(
-      "[data-total-fat]"
-    );
-
-  if(fatEl){
-    fatEl.textContent=
-      dinheiro(totalFat);
-  }
+  const fatEl = document.querySelector("[data-total-fat]");
+  if (fatEl) fatEl.textContent = dinheiro(totalFat);
 }
 
-/* ============================================================
-   TOAST
-============================================================ */
-
-function toast(msg,erro=false){
-
-  state.toast={
-    msg,
-    erro
-  };
-
+function toast(msg, erro = false) {
+  state.toast = { msg, erro };
   render();
-
-  setTimeout(()=>{
-
-    state.toast=null;
-
+  setTimeout(() => {
+    state.toast = null;
     render();
-
-  },3000);
+  }, 3000);
 }
 
 /* ============================================================
-   WHATSAPP
+   EXPORTAÇÃO E INTEGRAÇÕES
 ============================================================ */
+function obterProdutosBaixoEstoque() {
+  return state.produtos.filter(p => estoqueFinal(state.conf, p.id) < 5);
+}
 
-function textoConferencia(){
+function textoConferencia() {
+  const conf = CONFERENCIAS[state.conf];
+  const registro = state.dia.conferencias[state.conf];
+  let totalQtd = 0, totalFat = 0, totalReposto = 0;
+  let linhasVendas = "", linhasReposicao = "";
 
-  const conf=
-    CONFERENCIAS[state.conf];
+  state.produtos.forEach(p => {
+    const item = registro.produtos[p.id] || {};
+    const qtd = Number(item.vendido) || 0;
+    const reposto = Number(item.reposicao) || 0;
 
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  let totalQtd=0;
-  let totalFat=0;
-  let totalReposto=0;
-  let linhasVendas="";
-  let linhasReposicao="";
-
-  state.produtos.forEach(p=>{
-
-    const item=
-      registro.produtos[p.id]||{};
-
-    const qtd=
-      Number(item.vendido)||0;
-
-    const reposto=
-      Number(item.reposicao)||0;
-
-    if(qtd>0){
-
-      const fat=
-        qtd*Number(p.preco||0);
-
-      totalQtd+=qtd;
-      totalFat+=fat;
-
-      linhasVendas+=
-        `• ${p.nome}: ${qtd}x — ${dinheiro(fat)}\n`;
+    if (qtd > 0) {
+      const fat = qtd * Number(p.preco || 0);
+      totalQtd += qtd;
+      totalFat += fat;
+      linhasVendas += `• ${p.nome}: ${qtd}x — ${dinheiro(fat)}\n`;
     }
 
-    /*
-      FIX: a reposição nunca era incluída na mensagem final,
-      mesmo quando preenchida. Agora ela aparece em uma seção
-      própria, junto com o estoque atual de cada produto.
-    */
-
-    if(reposto>0){
-
-      totalReposto+=reposto;
-
-      linhasReposicao+=
-        `• ${p.nome}: +${reposto}\n`;
+    if (reposto > 0) {
+      totalReposto += reposto;
+      linhasReposicao += `• ${p.nome}: +${reposto}\n`;
     }
-
   });
 
-  let msg=
-    `*NOWFIT CEDRO — CONFERÊNCIA*\n`+
-    `*${conf.turno} — ${conf.tipo}*\n`+
-    `Data: ${dataBR(state.data)}\n`+
-    `Horário: ${conf.hora}\n`+
-    `Responsável: ${registro.responsavel||"—"}\n\n`+
-    `*REPOSIÇÃO*\n`+
-    (linhasReposicao||"Nenhuma reposição registrada.\n")+
-    `Total reposto: ${totalReposto}\n\n`+
-    `*VENDAS*\n`+
-    (linhasVendas||"Nenhuma venda registrada.\n")+
-    `\n*Itens vendidos:* ${totalQtd}\n`+
-    `*Faturamento:* ${dinheiro(totalFat)}`;
-
-  return msg;
-}
-
-function enviarWhatsApp(){
-
-  const msg=
-    textoConferencia();
-
-  window.open(
-    "https://api.whatsapp.com/send?text="+
-    encodeURIComponent(msg),
-    "_blank"
-  );
-}
-
-function textoDia(){
-
-  let totalQtd=0;
-  let totalFat=0;
-  let totalReposto=0;
-  let blocos="";
-
-  CONFERENCIAS.forEach(
-    (conf,index)=>{
-
-      const registro=
-        state.dia.conferencias[index];
-
-      if(!registro?.finalizado){
-        return;
-      }
-
-      let linhasVendas="";
-      let linhasReposicao="";
-      let qtdTurno=0;
-      let fatTurno=0;
-      let repostoTurno=0;
-
-      state.produtos.forEach(p=>{
-
-        const item=
-          registro.produtos[p.id]||{};
-
-        const qtd=
-          Number(item.vendido)||0;
-
-        const reposto=
-          Number(item.reposicao)||0;
-
-        if(qtd>0){
-
-          const fat=
-            qtd*Number(p.preco||0);
-
-          qtdTurno+=qtd;
-          fatTurno+=fat;
-
-          linhasVendas+=
-            `• ${p.nome}: ${qtd}x\n`;
-        }
-
-        /*
-          FIX: mesma correção do fechamento por turno —
-          agora a reposição de cada turno também é somada
-          e listada no fechamento do dia.
-        */
-
-        if(reposto>0){
-
-          repostoTurno+=reposto;
-
-          linhasReposicao+=
-            `• ${p.nome}: +${reposto}\n`;
-        }
-
-      });
-
-      totalQtd+=qtdTurno;
-      totalFat+=fatTurno;
-      totalReposto+=repostoTurno;
-
-      blocos+=
-        `\n*${conf.turno} — ${conf.tipo}*\n`+
-        `Responsável: ${registro.responsavel||"—"}\n`+
-        `Reposição:\n`+
-        (linhasReposicao||"Nenhuma reposição\n")+
-        `Vendas:\n`+
-        (linhasVendas||"Nenhuma venda\n")+
-        `Subtotal: ${dinheiro(fatTurno)}\n`;
-    }
-  );
-
-  return(
-    `*NOWFIT CEDRO — FECHAMENTO DO DIA*\n`+
-    `Data: ${dataBR(state.data)}\n`+
-    blocos+
-    `\n*TOTAL REPOSTO:* ${totalReposto}\n`+
-    `*TOTAL DE ITENS VENDIDOS:* ${totalQtd}\n`+
-    `*FATURAMENTO TOTAL:* ${dinheiro(totalFat)}`
-  );
-}
-
-function enviarDia(){
-
-  window.open(
-    "https://api.whatsapp.com/send?text="+
-    encodeURIComponent(textoDia()),
-    "_blank"
-  );
-}
-
-/* ============================================================
-   RESUMO ADMINISTRATIVO
-============================================================ */
-
-function calcularResumo(){
-
-  let faturamento=0;
-  let vendidos=0;
-  let estoque=0;
-  let repostoTotal=0;
-
-  const porTurno={
-    Manhã:0,
-    Tarde:0,
-    Noite:0
-  };
-
-  const porProduto={};
-
-  state.produtos.forEach(p=>{
-
-    porProduto[p.id]={
-      nome:p.nome,
-      qtd:0,
-      fat:0,
-      reposto:0
-    };
-
-    let final=Number(
-      state.dia.estoqueInicial[p.id]||0
-    );
-
-    CONFERENCIAS.forEach(
-      (conf,index)=>{
-
-        const registro=
-          state.dia.conferencias[index];
-
-        const item=
-          registro?.produtos?.[p.id]||{};
-
-        const qtd=
-          Number(item.vendido)||0;
-
-        const reposicao=
-          Number(item.reposicao)||0;
-
-        const fat=
-          qtd*Number(p.preco||0);
-
-        faturamento+=fat;
-        vendidos+=qtd;
-        repostoTotal+=reposicao;
-
-        porTurno[conf.turno]+=fat;
-
-        porProduto[p.id].qtd+=qtd;
-        porProduto[p.id].fat+=fat;
-        porProduto[p.id].reposto+=reposicao;
-
-        if(
-          item.ajuste!==null &&
-          item.ajuste!==undefined &&
-          item.ajuste!==""
-        ){
-
-          final=
-            Number(item.ajuste)||0;
-
-        }else{
-
-          final=
-            final+
-            reposicao-
-            qtd;
-        }
-      }
-    );
-
-    estoque+=final;
-  });
-
-  return{
-    faturamento,
-    vendidos,
-    estoque,
-    repostoTotal,
-    porTurno,
-    porProduto
-  };
-}
-
-/* ============================================================
-   HISTÓRICO
-============================================================ */
-
-function obterHistorico(){
-
-  const lista=[];
-
-  for(
-    let i=0;
-    i<localStorage.length;
-    i++
-  ){
-
-    const key=
-      localStorage.key(i);
-
-    if(
-      !key ||
-      !key.startsWith(
-        "nowfit_cedro_dia:"
-      )
-    ){
-      continue;
-    }
-
-    const data=
-      key.replace(
-        "nowfit_cedro_dia:",
-        ""
-      );
-
-    try{
-
-      const dia=
-        JSON.parse(
-          localStorage.getItem(key)
-        );
-
-      let conf=0;
-      let fat=0;
-
-      (dia.conferencias||[])
-        .forEach(reg=>{
-
-          if(reg?.finalizado){
-
-            conf++;
-
-            state.produtos.forEach(p=>{
-
-              const item=
-                reg.produtos?.[p.id]||{};
-
-              fat+=
-                (Number(item.vendido)||0)*
-                Number(p.preco||0);
-            });
-          }
-
-        });
-
-      lista.push({
-        data,
-        conf,
-        fat
-      });
-
-    }catch(e){}
+  const produtosBaixow = obterProdutosBaixoEstoque();
+  let textoAlertas = "";
+  if (produtosBaixow.length > 0) {
+    textoAlertas = produtosBaixow.map(p => `🚨 *${p.nome}*: Restam apenas ${estoqueFinal(state.conf, p.id)} un.`).join("\n");
+  } else {
+    textoAlertas = "✅ Todos os produtos com estoque adequado.";
   }
 
-  return lista
-    .sort(
-      (a,b)=>
-        b.data.localeCompare(a.data)
-    )
-    .slice(0,30);
+  return `*NOWFIT CEDRO — CONFERÊNCIA*\n` +
+    `*${conf.turno} — ${conf.tipo}*\n` +
+    `Data: ${dataBR(state.data)}\n` +
+    `Horário: ${conf.hora}\n` +
+    `Responsável: ${registro.responsavel || "—"}\n\n` +
+    `*REPOSIÇÃO*\n` + (linhasReposicao || "Nenhuma reposição registrada.\n") +
+    `Total reposto: ${totalReposto}\n\n` +
+    `*VENDAS*\n` + (linhasVendas || "Nenhuma venda registrada.\n") +
+    `\n*Itens vendidos:* ${totalQtd}\n` +
+    `*Faturamento:* ${dinheiro(totalFat)}\n\n` +
+    `*ESTOQUE BAIXO (<5 un):*\n` + textoAlertas;
+}
+
+function enviarWhatsApp() {
+  window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoConferencia()), "_blank");
+}
+
+function copiarTextoPlanilha() {
+  const txt = textoConferencia();
+  navigator.clipboard.writeText(txt).then(() => {
+    toast("Dados do turno copiados com sucesso!");
+  }).catch(() => {
+    toast("Erro ao copiar os dados.", true);
+  });
+}
+
+function exportarExcelCSV() {
+  let csvContent = "data:text/csv;charset=utf-8,ID,Produto,Categoria,Preco (RS),Estoque Inicial,Vendidos,Estoque Atual,Status\n";
+  const registro = state.dia.conferencias[state.conf];
+
+  state.produtos.forEach(p => {
+    const item = registro.produtos[p.id] || {};
+    const atual = estoqueFinal(state.conf, p.id);
+    const status = atual < 5 ? "ESTOQUE BAIXO" : "OK";
+    csvContent += `${p.id},"${p.nome}","${p.cat}",${p.preco},${estoqueAnterior(state.conf, p.id)},${item.vendido||0},${atual},${status}\n`;
+  });
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `estoque_nowfit_${state.data}_turno${state.conf+1}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function imprimirRelatorioPDF() {
+  window.print();
 }
 
 /* ============================================================
-   RENDER
+   CÁLCULOS DO ADMINISTRATIVO
 ============================================================ */
+function calcularResumo() {
+  let faturamento = 0, vendidos = 0, estoque = 0, repostoTotal = 0;
+  const porTurno = { Manhã: 0, Tarde: 0, Noite: 0 };
+  const porProduto = {};
 
-function render(){
+  state.produtos.forEach(p => {
+    porProduto[p.id] = { nome: p.nome, qtd: 0, fat: 0, reposto: 0 };
+    let final = Number(state.dia.estoqueInicial[p.id] || 0);
 
-  const app=
-    document.getElementById("app");
+    CONFERENCIAS.forEach((conf, index) => {
+      const registro = state.dia.conferencias[index];
+      const item = registro?.produtos?.[p.id] || {};
+      const qtd = Number(item.vendido) || 0;
+      const reposicao = Number(item.reposicao) || 0;
+      const fat = qtd * Number(p.preco || 0);
 
-  app.innerHTML=
-    renderHeader()+
-    (
-      state.modo==="recepcao"
-      ?renderRecepcao()
-      :renderAdmin()
-    )+
-    (
-      state.modal
-      ?renderModal()
-      :""
-    )+
-    (
-      state.toast
-      ?`
-        <div
-          class="toast"
-          style="background:${
-            state.toast.erro
-            ?"#ff4d4d"
-            :"#c6ff00"
-          }">
-          ${esc(state.toast.msg)}
-        </div>
-      `
-      :""
-    );
+      faturamento += fat;
+      vendidos += qtd;
+      repostoTotal += reposicao;
+      porTurno[conf.turno] += fat;
+
+      porProduto[p.id].qtd += qtd;
+      porProduto[p.id].fat += fat;
+      porProduto[p.id].reposto += reposicao;
+
+      if (item.ajuste !== null && item.ajuste !== undefined && item.ajuste !== "") {
+        final = Number(item.ajuste) || 0;
+      } else {
+        final = final + reposicao - qtd;
+      }
+    });
+
+    estoque += final;
+  });
+
+  return { faturamento, vendidos, estoque, repostoTotal, porTurno, porProduto };
+}
+
+/* ============================================================
+   INTERFACE DE USUÁRIO (RENDER)
+============================================================ */
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = renderHeader() +
+    (state.modo === "recepcao" ? renderRecepcao() : renderAdmin()) +
+    (state.modal ? renderModal() : "") +
+    (state.toast ? `<div class="toast" style="background:${state.toast.erro ? "#ff4d4d" : "#c6ff00"}">${esc(state.toast.msg)}</div>` : "");
 
   bind();
 }
 
-/* ============================================================
-   HEADER
-============================================================ */
-
-function renderHeader(){
-
-  return`
+function renderHeader() {
+  return `
     <header class="header">
-
       <div class="brand">
-
         <div class="logo">N</div>
-
         <div>
-
-          <div class="brand-title">
-            NOW<span style="color:#c6ff00">FIT</span>
-          </div>
-
-          <div class="brand-sub">
-            Unidade Cedro · Controle de Estoque
-          </div>
-
+          <div class="brand-title">NOW<span style="color:#c6ff00">FIT</span></div>
+          <div class="brand-sub">Unidade Cedro · Controle de Estoque & Turnos</div>
         </div>
-
       </div>
-
       <div class="toggle">
-
-        <button
-          class="${
-            state.modo==="recepcao"
-            ?"active"
-            :""
-          }"
-          data-action="recepcao">
-          Recepção
-        </button>
-
-        <button
-          class="${
-            state.modo==="administrativo"
-            ?"active"
-            :""
-          }"
-          data-action="admin">
-          Painel Administrativo
-        </button>
-
+        <button class="${state.modo === "recepcao" ? "active" : ""}" data-action="recepcao">Recepção</button>
+        <button class="${state.modo === "administrativo" ? "active" : ""}" data-action="admin">Painel Administrativo</button>
       </div>
-
     </header>
   `;
 }
 
-/* ============================================================
-   RECEPÇÃO
-============================================================ */
+function renderRecepcao() {
+  const conf = CONFERENCIAS[state.conf];
+  const registro = state.dia.conferencias[state.conf];
+  let totalQtd = 0, totalFat = 0;
 
-function renderRecepcao(){
-
-  const conf=
-    CONFERENCIAS[state.conf];
-
-  const registro=
-    state.dia.conferencias[state.conf];
-
-  let totalQtd=0;
-  let totalFat=0;
-
-  state.produtos.forEach(p=>{
-
-    const item=
-      registro.produtos[p.id]||{};
-
-    const qtd=
-      Number(item.vendido)||0;
-
-    totalQtd+=qtd;
-
-    totalFat+=
-      qtd*Number(p.preco||0);
+  state.produtos.forEach(p => {
+    const item = registro.produtos[p.id] || {};
+    const qtd = Number(item.vendido) || 0;
+    totalQtd += qtd;
+    totalFat += qtd * Number(p.preco || 0);
   });
 
-  const feitas=
-    state.dia.conferencias
-      .filter(r=>r?.finalizado)
-      .length;
+  const produtosBaixo = obterProdutosBaixoEstoque();
+  const feitas = state.dia.conferencias.filter(r => r?.finalizado).length;
+  const progresso = (feitas / 6) * 100;
+  const turnoFinalizado = registro.finalizado;
 
-  const progresso=
-    feitas/6*100;
-
-  const proximo=
-    state.conf<
-    CONFERENCIAS.length-1
-      ?CONFERENCIAS[state.conf+1]
-      :null;
-
-  return`
-
+  return `
     <main class="container">
-
       <div class="top">
-
         <div class="field">
-
-          <label class="label">
-            Data
-          </label>
-
-          <input
-            id="data"
-            class="input"
-            type="date"
-            value="${state.data}">
-
+          <label class="label">Data</label>
+          <input id="data" class="input" type="date" value="${state.data}">
         </div>
-
         <div class="progress">
-
-          <div class="progress-text">
-            ${feitas} de 6 conferências finalizadas
-          </div>
-
+          <div class="progress-text">${feitas} de 6 conferências finalizadas</div>
           <div class="progress-bg">
-
-            <div
-              class="progress-bar"
-              style="width:${progresso}%">
-            </div>
-
+            <div class="progress-bar" style="width:${progresso}%"></div>
           </div>
-
         </div>
-
       </div>
 
       <div class="turnos">
+        ${CONFERENCIAS.map((c, index) => {
+          const feito = state.dia.conferencias[index]?.finalizado;
+          return `
+            <button class="turno ${state.conf === index ? "active" : ""}" data-conf="${index}">
+              <div class="turno-top">
+                <span class="dot ${feito ? "done" : ""}"></span>
+                ${c.turno}
+              </div>
+              <span class="turno-sub">${c.tipo} · ${c.hora}</span>
+            </button>
+          `;
+        }).join("")}
+      </div>
 
-        ${CONFERENCIAS.map(
-          (c,index)=>{
-
-            const feito=
-              state.dia
-                .conferencias[index]
-                ?.finalizado;
-
-            return`
-
-              <button
-                class="turno ${
-                  state.conf===index
-                  ?"active"
-                  :""
-                }"
-                data-conf="${index}">
-
-                <div class="turno-top">
-
-                  <span
-                    class="dot ${
-                      feito
-                      ?"done"
-                      :""
-                    }">
-                  </span>
-
-                  ${c.turno}
-
-                </div>
-
-                <span class="turno-sub">
-                  ${c.tipo} · ${c.hora}
-                </span>
-
-              </button>
-
-            `;
-          }
-        ).join("")}
-
+      <!-- Banner que exibe APENAS produtos com Estoque Baixo (< 5 un) -->
+      <div class="alert-banner ${produtosBaixo.length > 0 ? 'active' : ''}">
+        <div>
+          🚨 <strong>ALERTA DE ESTOQUE BAIXO:</strong><br>
+          <span style="font-size:0.8rem;">
+            ${produtosBaixo.map(p => `${esc(p.nome)} (${estoqueFinal(state.conf, p.id)} un)`).join(" • ")}
+          </span>
+        </div>
+        <button class="btn whatsapp" style="padding:6px 12px; font-size:.75rem;" onclick="enviarWhatsApp()">Enviar Alerta</button>
       </div>
 
       <div class="card">
-
         <div class="card-title">
-
-          <span style="color:#c6ff00">
-            ${conf.turno} — ${conf.tipo}
-          </span>
-
-          <span style="color:#999;font-size:.72rem">
-            ${conf.hora}
-          </span>
-
+          <span>NOWFIT CEDRO — RELATÓRIO DE ESTOQUE (${conf.turno} - ${conf.tipo})</span>
+          <span style="font-size:.72rem">${conf.hora} | Data: ${dataBR(state.data)} ${turnoFinalizado ? '<b style="color:#00e0a4;">[CONCLUÍDO]</b>' : ''}</span>
         </div>
-
         <div class="card-body">
-
           <div class="field">
-
-            <label class="label">
-              Responsável pela conferência
-            </label>
-
-            <select
-              id="responsavel"
-              class="select">
-
-              <option value="">
-                Selecione quem está conferindo...
-              </option>
-
-              ${RESPONSAVEIS.map(
-                nome=>`
-                  <option
-                    value="${esc(nome)}"
-                    ${
-                      registro.responsavel===nome
-                      ?"selected"
-                      :""
-                    }>
-                    ${esc(nome)}
-                  </option>
-                `
-              ).join("")}
-
+            <label class="label">Responsável pela conferência</label>
+            <select id="responsavel" class="select" ${turnoFinalizado ? 'disabled' : ''}>
+              <option value="">Selecione quem está conferindo...</option>
+              ${RESPONSAVEIS.map(nome => `
+                <option value="${esc(nome)}" ${registro.responsavel === nome ? "selected" : ""}>${esc(nome)}</option>
+              `).join("")}
             </select>
-
           </div>
-
         </div>
-
       </div>
 
-      ${
-        state.conf>0
-        ?`
-          <div class="info">
-            <strong>Estoque automático:</strong>
-            o estoque anterior deste turno veio
-            automaticamente do estoque final do turno anterior.
-            Não é necessário digitar novamente.
-          </div>
-        `
-        :`
-          <div class="info">
-            <strong>Primeiro turno:</strong>
-            o estoque anterior vem do estoque inicial
-            configurado para este dia.
-          </div>
-        `
-      }
-
-      ${
-        registro.finalizado
-        ?`
-          <div class="final-info">
-            <strong>Turno finalizado.</strong>
-            Os valores deste turno já foram transferidos
-            para o próximo turno.
-          </div>
-        `
-        :""
-      }
-
       <div class="card">
+        <div class="card-title"><span>Produtos do Estoque</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Anterior</th>
+                  <th>Reposição</th>
+                  <th>Vendido</th>
+                  <th>Atual</th>
+                  <th>Faturado</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.produtos.map(p => {
+                  const item = registro.produtos[p.id] || {};
+                  const anterior = estoqueAnterior(state.conf, p.id);
+                  const atual = estoqueFinal(state.conf, p.id);
+                  const vendido = Number(item.vendido) || 0;
+                  const faturado = vendido * Number(p.preco || 0);
 
-        <div class="card-title">
-          Controle de produtos
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-
-                <th>Produto</th>
-
-                <th class="mobile-hide">
-                  Categoria
-                </th>
-
-                <th>
-                  Estoque anterior
-                </th>
-
-                <th>
-                  Reposição
-                </th>
-
-                <th>
-                  Vendido
-                </th>
-
-                <th>
-                  Estoque atual
-                </th>
-
-                <th class="mobile-hide">
-                  Preço
-                </th>
-
-                <th>
-                  Faturado
-                </th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${state.produtos.map(
-                p=>{
-
-                  const item=
-                    registro.produtos[p.id]||
-                    {
-                      reposicao:"",
-                      vendido:"",
-                      ajuste:null
-                    };
-
-                  const anterior=
-                    estoqueAnterior(
-                      state.conf,
-                      p.id
-                    );
-
-                  const atual=
-                    estoqueFinal(
-                      state.conf,
-                      p.id
-                    );
-
-                  const vendido=
-                    Number(item.vendido)||0;
-
-                  const faturado=
-                    vendido*
-                    Number(p.preco||0);
-
-                  return`
-
+                  return `
                     <tr data-linha-produto="${p.id}">
-
-                      <td class="product-name">
-                        ${esc(p.nome)}
-                      </td>
-
-                      <td class="mobile-hide">
-                        <span class="tag">
-                          ${esc(p.cat)}
-                        </span>
-                      </td>
-
-                      <td data-cel-anterior>
-                        <strong>
-                          ${anterior}
-                        </strong>
-                      </td>
-
                       <td>
-
-                        <input
-                          class="number"
-                          type="number"
-                          min="0"
-                          inputmode="numeric"
-                          data-prod="${p.id}"
-                          data-campo="reposicao"
-                          value="${esc(item.reposicao)}"
-                          placeholder="0"
-                          ${
-                            registro.finalizado
-                            ?"disabled"
-                            :""
-                          }>
-
+                        <div class="product-name">${esc(p.nome)}</div>
+                        <span class="tag">${esc(p.cat)} · ${dinheiro(p.preco)}</span>
                       </td>
-
+                      <td data-cel-anterior>${anterior}</td>
                       <td>
-
-                        <input
-                          class="number"
-                          type="number"
-                          min="0"
-                          inputmode="numeric"
-                          data-prod="${p.id}"
-                          data-campo="vendido"
-                          value="${esc(item.vendido)}"
-                          placeholder="0"
-                          ${
-                            registro.finalizado
-                            ?"disabled"
-                            :""
-                          }>
-
+                        <input class="number" type="number" min="0" value="${esc(item.reposicao)}"
+                          ${turnoFinalizado ? 'disabled' : ''}
+                          oninput="alterarCampo(${p.id}, 'reposicao', this.value)">
                       </td>
-
                       <td>
-
-                        <span
-                          data-cel-atual
-                          class="stock ${
-                            atual<0
-                            ?"neg"
-                            :"ok"
-                          }">
-
-                          ${atual}
-
-                        </span>
-
+                        <input class="number" type="number" min="0" value="${esc(item.vendido)}"
+                          ${turnoFinalizado ? 'disabled' : ''}
+                          oninput="alterarCampo(${p.id}, 'vendido', this.value)">
                       </td>
-
-                      <td class="mobile-hide">
-                        ${dinheiro(p.preco)}
-                      </td>
-
-                      <td
-                        data-cel-faturado
-                        style="
-                          color:#c6ff00;
-                          font-weight:800">
-                        ${dinheiro(faturado)}
-                      </td>
-
+                      <td class="stock ${atual < 0 ? 'neg' : 'ok'}" data-cel-atual>${atual}</td>
+                      <td data-cel-faturado>${dinheiro(faturado)}</td>
                     </tr>
-
                   `;
-                }
-              ).join("")}
-
-            </tbody>
-
-          </table>
-
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
         </div>
-
       </div>
 
       <div class="summary">
-
         <div>
-
-          <span class="summary-label">
-            Itens vendidos
-          </span>
-
-          <span class="summary-value" data-total-qtd>
-            ${totalQtd}
-          </span>
-
+          <span class="summary-label">Itens Vendidos</span>
+          <div class="summary-value" data-total-qtd>${totalQtd}</div>
         </div>
-
         <div>
-
-          <span class="summary-label">
-            Faturamento
-          </span>
-
-          <span
-            class="summary-value"
-            data-total-fat
-            style="color:#c6ff00">
-            ${dinheiro(totalFat)}
-          </span>
-
+          <span class="summary-label">Faturamento do Turno</span>
+          <div class="summary-value" style="color:#c6ff00" data-total-fat>${dinheiro(totalFat)}</div>
         </div>
-
       </div>
 
-      <div class="card">
-
-        <div class="card-title">
-          Ajuste físico de estoque
-        </div>
-
-        <div class="card-body">
-
-          <div class="info">
-            Use esta opção somente quando a quantidade física
-            encontrada for diferente do cálculo automático.
-            O valor informado será o estoque que será
-            transferido para o próximo turno.
-          </div>
-
-          <div class="table-wrap">
-
-            <table>
-
-              <thead>
-
-                <tr>
-                  <th>Produto</th>
-                  <th>Estoque calculado</th>
-                  <th>Ajuste físico</th>
-                  <th>Estoque transferido</th>
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                ${state.produtos.map(
-                  p=>{
-
-                    const item=
-                      registro.produtos[p.id]||
-                      {};
-
-                    const calculado=
-                      estoqueFinal(
-                        state.conf,
-                        p.id
-                      );
-
-                    const ajuste=
-                      item.ajuste;
-
-                    const transferido=
-                      ajuste!==null &&
-                      ajuste!==undefined &&
-                      ajuste!==""
-                      ?Number(ajuste)
-                      :calculado;
-
-                    return`
-
-                      <tr data-linha-ajuste="${p.id}">
-
-                        <td class="product-name">
-                          ${esc(p.nome)}
-                        </td>
-
-                        <td data-cel-calculado>
-                          ${calculado}
-                        </td>
-
-                        <td>
-
-                          <input
-                            class="number"
-                            type="number"
-                            min="0"
-                            data-ajuste="${p.id}"
-                            value="${
-                              ajuste===null ||
-                              ajuste===undefined
-                              ?""
-                              :esc(ajuste)
-                            }"
-                            placeholder="—"
-                            ${
-                              registro.finalizado
-                              ?"disabled"
-                              :""
-                            }>
-
-                        </td>
-
-                        <td
-                          data-cel-transferido
-                          class="stock ok"
-                          style="font-weight:900">
-
-                          ${transferido}
-
-                        </td>
-
-                      </tr>
-
-                    `;
-                  }
-                ).join("")}
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      <!-- Botões de Ação com Concluir / Reabrir Turno -->
       <div class="actions">
-
-        ${
-          !registro.finalizado
-          ?`
-            <button
-              id="finalizar"
-              class="btn finish">
-
-              ${
-                proximo
-                ?`Finalizar turno → ${proximo.turno} ${proximo.tipo}`
-                :`Finalizar último turno → Encerrar dia`
-              }
-
-            </button>
-          `
-          :`
-            <button
-              class="btn secondary"
-              id="reabrir">
-
-              Reabrir este turno
-
-            </button>
-          `
-        }
-
-        <button
-          id="whatsapp"
-          class="btn whatsapp">
-
-          Enviar conferência no WhatsApp
-
-        </button>
-
-        ${
-          feitas===6
-          ?`
-            <button
-              id="whatsapp-dia"
-              class="btn primary">
-
-              Fechamento completo do dia
-
-            </button>
-          `
-          :""
-        }
-
+        ${!turnoFinalizado ? `
+          <button class="btn finish" onclick="finalizarTurno()">✔ Concluir Turno</button>
+        ` : `
+          <button class="btn reopen" onclick="reabrirTurno()">🔓 Reabrir Turno</button>
+        `}
+        <button class="btn whatsapp" onclick="enviarWhatsApp()">💬 WhatsApp</button>
+        <button class="btn copy-btn" onclick="copiarTextoPlanilha()">📋 Copiar Texto</button>
+        <button class="btn excel" onclick="exportarExcelCSV()">📊 Exportar Excel</button>
+        <button class="btn secondary" onclick="imprimirRelatorioPDF()">📄 Imprimir / PDF</button>
       </div>
 
+      <div class="assinatura-area">
+        <div class="assinatura-box">
+          <b>${registro.responsavel || "Responsável pelo Turno"}</b><br>
+          Conferência de Estoque
+        </div>
+        <div class="assinatura-box">
+          <b>Gerência / Supervisão</b><br>
+          NOWfit Academia - Unidade Cedro
+        </div>
+      </div>
     </main>
   `;
 }
 
-/* ============================================================
-   ADMIN
-============================================================ */
+function renderAdmin() {
+  const res = calcularResumo();
 
-function renderAdmin(){
-
-  const resumo=
-    calcularResumo();
-
-  const historico=
-    obterHistorico();
-
-  if(state.abaAdmin==="produtos"){
-
-    return renderProdutosAdmin();
-  }
-
-  const produtos=
-    Object.values(
-      resumo.porProduto
-    )
-    .filter(p=>p.qtd>0||p.reposto>0)
-    .sort(
-      (a,b)=>b.qtd-a.qtd
-    );
-
-  return`
-
+  return `
     <main class="container">
-
-      <div class="top">
-
-        <div class="field">
-
-          <label class="label">
-            Data em análise
-          </label>
-
-          <input
-            id="data-admin"
-            class="input"
-            type="date"
-            value="${state.data}">
-
-        </div>
-
-        <div class="admin-tabs">
-
-          <button
-            class="btn ${
-              state.abaAdmin==="resumo"
-              ?"primary"
-              :"secondary"
-            }"
-            data-aba="resumo">
-
-            Painel Geral
-
-          </button>
-
-          <button
-            class="btn ${
-              state.abaAdmin==="produtos"
-              ?"primary"
-              :"secondary"
-            }"
-            data-aba="produtos">
-
-            ⚙️ Produtos & Estoque
-
-          </button>
-
-        </div>
-
+      <div class="admin-tabs">
+        <button class="btn ${state.abaAdmin === "resumo" ? "primary" : "secondary"}" onclick="state.abaAdmin='resumo';render();">Resumo Geral</button>
+        <button class="btn ${state.abaAdmin === "produtos" ? "primary" : "secondary"}" onclick="state.abaAdmin='produtos';render();">Gerenciar Produtos</button>
+        <button class="btn ${state.abaAdmin === "ajuste" ? "primary" : "secondary"}" onclick="state.abaAdmin='ajuste';render();">Ajuste Físico</button>
+        <button class="btn ${state.abaAdmin === "logs" ? "primary" : "secondary"}" onclick="state.abaAdmin='logs';render();">Logs / Auditoria</button>
       </div>
 
-      <div class="kpis">
-
-        <div class="kpi">
-
-          <div class="kpi-label">
-            Faturamento do dia
+      ${state.abaAdmin === "resumo" ? `
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">Faturamento Total do Dia</div>
+            <div class="kpi-value" style="color:#c6ff00">${dinheiro(res.faturamento)}</div>
           </div>
-
-          <div
-            class="kpi-value"
-            style="color:#c6ff00">
-
-            ${dinheiro(resumo.faturamento)}
-
+          <div class="kpi">
+            <div class="kpi-label">Total de Itens Vendidos</div>
+            <div class="kpi-value">${res.vendidos} un</div>
           </div>
-
-        </div>
-
-        <div class="kpi">
-
-          <div class="kpi-label">
-            Itens vendidos
+          <div class="kpi">
+            <div class="kpi-label">Estoque Total Restante</div>
+            <div class="kpi-value">${res.estoque} un</div>
           </div>
-
-          <div class="kpi-value">
-            ${resumo.vendidos}
-          </div>
-
         </div>
+      ` : ""}
 
-        <div class="kpi">
-
-          <div class="kpi-label">
-            Estoque atual
-          </div>
-
-          <div class="kpi-value">
-            ${resumo.estoque}
-          </div>
-
+      ${state.abaAdmin === "produtos" ? `
+        <div class="actions" style="margin-bottom: 15px;">
+          <button class="btn primary" onclick="state.modal='novo_produto';render();">➕ Adicionar Produto</button>
         </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Faturamento por turno
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Manhã</th>
-                <th>Tarde</th>
-                <th>Noite</th>
-                <th>Total</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              <tr>
-
-                <td>
-                  ${dinheiro(
-                    resumo.porTurno.Manhã
-                  )}
-                </td>
-
-                <td>
-                  ${dinheiro(
-                    resumo.porTurno.Tarde
-                  )}
-                </td>
-
-                <td>
-                  ${dinheiro(
-                    resumo.porTurno.Noite
-                  )}
-                </td>
-
-                <td
-                  style="
-                    color:#c6ff00;
-                    font-weight:900">
-
-                  ${dinheiro(
-                    resumo.faturamento
-                  )}
-
-                </td>
-
-              </tr>
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Status dos turnos
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Turno</th>
-                <th>Tipo</th>
-                <th>Responsável</th>
-                <th>Status</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${CONFERENCIAS.map(
-                (c,index)=>{
-
-                  const r=
-                    state.dia
-                      .conferencias[index];
-
-                  return`
-
-                    <tr>
-
-                      <td>
-                        ${c.turno}
-                      </td>
-
-                      <td>
-                        ${c.tipo}
-                      </td>
-
-                      <td>
-                        ${esc(
-                          r.responsavel||"—"
-                        )}
-                      </td>
-
-                      <td>
-
-                        <span
-                          class="tag"
-                          style="
-                            color:${
-                              r.finalizado
-                              ?"#c6ff00"
-                              :"#999"
-                            }">
-
-                          ${
-                            r.finalizado
-                            ?"Finalizado"
-                            :"Pendente"
-                          }
-
-                        </span>
-
-                      </td>
-
-                    </tr>
-
-                  `;
-                }
-              ).join("")}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Produtos mais vendidos e repostos
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Produto</th>
-                <th>Vendido</th>
-                <th>Reposto</th>
-                <th>Faturamento</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${
-                produtos.length===0
-                ?`
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
                   <tr>
-                    <td
-                      colspan="4"
-                      class="empty">
-
-                      Nenhuma venda ou reposição registrada.
-
-                    </td>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque Inicial</th>
+                    <th>Ações</th>
                   </tr>
-                `
-                :produtos.map(
-                  p=>`
-
+                </thead>
+                <tbody>
+                  ${state.produtos.map(p => `
                     <tr>
-
+                      <td class="product-name">${esc(p.nome)}</td>
+                      <td><span class="tag">${esc(p.cat)}</span></td>
+                      <td>${dinheiro(p.preco)}</td>
+                      <td>${p.estoqueInicial}</td>
                       <td>
-                        ${esc(p.nome)}
+                        <button class="btn danger" style="padding:4px 8px; font-size:.7rem;" onclick="removerProduto(${p.id})">Excluir</button>
                       </td>
-
-                      <td>
-                        ${p.qtd}
-                      </td>
-
-                      <td>
-                        ${p.reposto}
-                      </td>
-
-                      <td
-                        style="
-                          color:#c6ff00;
-                          font-weight:800">
-
-                        ${dinheiro(p.fat)}
-
-                      </td>
-
                     </tr>
-
-                  `
-                ).join("")
-              }
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Histórico
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Data</th>
-                <th>Conferências</th>
-                <th>Faturamento</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${
-                historico.length===0
-                ?`
-                  <tr>
-                    <td
-                      colspan="3"
-                      class="empty">
-                      Nenhum histórico encontrado.
-                    </td>
-                  </tr>
-                `
-                :historico.map(
-                  h=>`
-
-                    <tr>
-
-                      <td>
-
-                        <button
-                          class="btn secondary"
-                          style="
-                            padding:6px 10px"
-                          data-historico="${h.data}">
-
-                          ${dataBR(h.data)}
-
-                        </button>
-
-                      </td>
-
-                      <td>
-                        ${h.conf}/6
-                      </td>
-
-                      <td
-                        style="
-                          color:#c6ff00;
-                          font-weight:800">
-
-                        ${dinheiro(h.fat)}
-
-                      </td>
-
-                    </tr>
-
-                  `
-                ).join("")
-              }
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-      ${
-        state.dia.conferencias
-          .every(r=>r.finalizado)
-        ?`
-          <div class="actions">
-
-            <button
-              id="whatsapp-dia-admin"
-              class="btn whatsapp">
-
-              Enviar fechamento do dia no WhatsApp
-
-            </button>
-
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
           </div>
-        `
-        :""
-      }
+        </div>
+      ` : ""}
 
+      ${state.abaAdmin === "ajuste" ? `
+        <div class="card">
+          <div class="card-title"><span>Ajuste Físico de Estoque</span></div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Estoque Calculado</th>
+                    <th>Ajuste Contado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.produtos.map(p => {
+                    const item = state.dia.conferencias[state.conf]?.produtos?.[p.id] || {};
+                    const anterior = estoqueAnterior(state.conf, p.id);
+                    const reposicao = Number(item.reposicao) || 0;
+                    const vendido = Number(item.vendido) || 0;
+                    const calculado = anterior + reposicao - vendido;
+
+                    return `
+                      <tr data-linha-ajuste="${p.id}">
+                        <td>${esc(p.nome)}</td>
+                        <td data-cel-calculado>${calculado}</td>
+                        <td>
+                          <input class="number" type="number" value="${item.ajuste ?? ''}"
+                            oninput="ajustarEstoque(${p.id}, this.value)">
+                        </td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ` : ""}
+
+      ${state.abaAdmin === "logs" ? `
+        <div class="history-box">
+          ${state.logs.map(log => `<div class="history-item">${esc(log)}</div>`).join("")}
+        </div>
+      ` : ""}
     </main>
   `;
 }
 
-/* ============================================================
-   ADMIN — PRODUTOS
-============================================================ */
-
-function renderProdutosAdmin(){
-
-  return`
-
-    <main class="container">
-
-      <div class="top">
-
-        <div class="field">
-
-          <label class="label">
-            Data atual
-          </label>
-
-          <input
-            id="data-admin"
-            class="input"
-            type="date"
-            value="${state.data}">
-
-        </div>
-
-        <div class="admin-tabs">
-
-          <button
-            class="btn secondary"
-            data-aba="resumo">
-
-            Painel Geral
-
-          </button>
-
-          <button
-            class="btn primary"
-            data-aba="produtos">
-
-            ⚙️ Produtos & Estoque
-
-          </button>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-
-          <span>
-            Produtos e estoque inicial
-          </span>
-
-          <button
-            id="novo-produto"
-            class="btn primary"
-            style="
-              padding:7px 12px;
-              font-size:.75rem">
-
-            + Adicionar produto
-
-          </button>
-
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-
-                <th>Produto</th>
-                <th>Categoria</th>
-                <th>Preço</th>
-                <th>Estoque inicial</th>
-                <th>Ações</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${state.produtos.map(
-                p=>`
-
-                  <tr>
-
-                    <td class="product-name">
-                      ${esc(p.nome)}
-                    </td>
-
-                    <td>
-                      <span class="tag">
-                        ${esc(p.cat)}
-                      </span>
-                    </td>
-
-                    <td>
-                      ${dinheiro(p.preco)}
-                    </td>
-
-                    <td>
-                      ${p.estoqueInicial}
-                    </td>
-
-                    <td>
-
-                      <button
-                        class="btn secondary"
-                        style="
-                          padding:6px 9px"
-                        data-editar="${p.id}">
-
-                        ✏️
-
-                      </button>
-
-                      <button
-                        class="btn danger"
-                        style="
-                          padding:6px 9px"
-                        data-excluir="${p.id}">
-
-                        🗑️
-
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                `
-              ).join("")}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-      <div class="info">
-
-        <strong>Importante:</strong>
-        o estoque inicial configurado aqui é usado
-        para iniciar um novo dia. Os dias que já possuem
-        registros guardam seu próprio estoque inicial,
-        portanto alterar este valor não modifica o histórico.
-
-      </div>
-
-    </main>
-  `;
-}
-
-/* ============================================================
-   MODAL PRODUTO
-============================================================ */
-
-function renderModal(){
-
-  const p=
-    state.modal;
-
-  const editar=
-    !!p.id;
-
-  return`
-
-    <div class="modal-bg">
-
-      <div class="modal">
-
-        <h3 style="margin-top:0">
-
-          ${
-            editar
-            ?"Editar produto"
-            :"Adicionar produto"
-          }
-
-        </h3>
-
-        <form id="form-produto">
-
-          <input
-            type="hidden"
-            name="id"
-            value="${p.id||""}">
-
-          <div class="form-grid">
-
-            <div class="field">
-
-              <label class="label">
-                Nome
-              </label>
-
-              <input
-                class="input"
-                name="nome"
-                required
-                value="${esc(p.nome||"")}">
-
-            </div>
-
-            <div class="field">
-
-              <label class="label">
-                Categoria
-              </label>
-
-              <input
-                class="input"
-                name="cat"
-                required
-                value="${esc(p.cat||"")}">
-
-            </div>
-
-            <div class="field">
-
-              <label class="label">
-                Preço de venda
-              </label>
-
-              <input
-                class="input"
-                type="number"
-                step="0.01"
-                min="0"
-                name="preco"
-                required
-                value="${p.preco??""}">
-
-            </div>
-
-            <div class="field">
-
-              <label class="label">
-                Estoque inicial
-              </label>
-
-              <input
-                class="input"
-                type="number"
-                min="0"
-                name="estoqueInicial"
-                required
-                value="${p.estoqueInicial??0}">
-
-            </div>
-
+function renderModal() {
+  if (state.modal === 'novo_produto') {
+    return `
+      <div class="modal-bg">
+        <div class="modal">
+          <h3 style="margin-top:0;">Cadastrar Novo Produto</h3>
+          <form class="form-grid" onsubmit="salvarNovoProduto(event)">
+            <input id="p_nome" class="input" type="text" placeholder="Nome do Produto" required>
+            <input id="p_cat" class="input" type="text" placeholder="Categoria" required>
+            <input id="p_preco" class="input" type="number" step="0.01" placeholder="Preço (R$)" required>
+            <input id="p_qtd" class="input" type="number" placeholder="Estoque Inicial" required>
             <div class="modal-actions">
-
-              <button
-                type="button"
-                class="btn secondary"
-                id="fechar-modal">
-
-                Cancelar
-
-              </button>
-
-              <button
-                type="submit"
-                class="btn primary">
-
-                Salvar produto
-
-              </button>
-
+              <button class="btn secondary" type="button" onclick="state.modal=null;render();">Cancelar</button>
+              <button class="btn primary" type="submit">Salvar Produto</button>
             </div>
-
-          </div>
-
-        </form>
-
+          </form>
+        </div>
       </div>
-
-    </div>
-  `;
+    `;
+  }
+  return "";
 }
 
-/* ============================================================
-   SALVAR PRODUTO
-============================================================ */
-
-function salvarProduto(e){
-
+function salvarNovoProduto(e) {
   e.preventDefault();
+  const nome = document.getElementById("p_nome").value;
+  const cat = document.getElementById("p_cat").value;
+  const preco = parseFloat(document.getElementById("p_preco").value);
+  const estoqueInicial = parseInt(document.getElementById("p_qtd").value);
 
-  const form=e.target;
-
-  const id=
-    form.id.value
-    ?Number(form.id.value)
-    :Date.now();
-
-  const nome=
-    form.nome.value.trim();
-
-  const cat=
-    form.cat.value.trim();
-
-  const preco=
-    Number(form.preco.value)||0;
-
-  const estoqueInicial=
-    Number(form.estoqueInicial.value)||0;
-
-  if(!nome||!cat){
-
-    toast(
-      "Preencha nome e categoria.",
-      true
-    );
-
-    return;
-  }
-
-  const produto={
-    id,
+  const novo = {
+    id: Date.now(),
     nome,
     cat,
     preco,
     estoqueInicial
   };
 
-  const index=
-    state.produtos.findIndex(
-      p=>p.id===id
-    );
-
-  if(index>=0){
-
-    state.produtos[index]=produto;
-
-  }else{
-
-    state.produtos.push(produto);
-
-    /*
-      Se for produto novo, adiciona ao dia atual.
-    */
-
-    if(
-      state.dia.estoqueInicial[id]===
-      undefined
-    ){
-
-      state.dia.estoqueInicial[id]=
-        estoqueInicial;
-    }
-
-    state.dia.conferencias.forEach(
-      reg=>{
-
-        if(!reg.produtos){
-          reg.produtos={};
-        }
-
-        reg.produtos[id]={
-          reposicao:"",
-          vendido:"",
-          ajuste:null
-        };
-
-      }
-    );
-
-    salvarDia();
-  }
-
+  state.produtos.push(novo);
   salvarProdutos();
-
-  state.modal=null;
-
-  toast(
-    "Produto salvo com sucesso!"
-  );
-
+  registrarLog(`[CADASTRO] Produto adicionado: ${nome}`);
+  state.modal = null;
+  toast("Produto cadastrado com sucesso!");
   render();
 }
 
-/* ============================================================
-   EXCLUIR PRODUTO
-============================================================ */
-
-function excluirProduto(id){
-
-  const produto=
-    state.produtos.find(
-      p=>p.id===id
-    );
-
-  if(!produto)return;
-
-  const confirmar=
-    confirm(
-      `Excluir "${produto.nome}" do catálogo?\n\n`+
-      `Os registros históricos não serão apagados.`
-    );
-
-  if(!confirmar)return;
-
-  state.produtos=
-    state.produtos.filter(
-      p=>p.id!==id
-    );
-
-  salvarProdutos();
-
-  toast(
-    "Produto removido do catálogo."
-  );
-
-  render();
+function removerProduto(id) {
+  if (confirm("Tem certeza que deseja excluir este produto?")) {
+    state.produtos = state.produtos.filter(p => p.id !== id);
+    salvarProdutos();
+    registrarLog(`[EXCLUSÃO] Produto removido ID: ${id}`);
+    render();
+  }
 }
 
 /* ============================================================
-   REABRIR TURNO
+   EVENT BINDING & INICIALIZAÇÃO
 ============================================================ */
+function bind() {
+  document.querySelectorAll("[data-action]").forEach(btn => {
+    btn.onclick = () => {
+      const act = btn.getAttribute("data-action");
+      if (act === "recepcao") state.modo = "recepcao";
+      if (act === "admin") state.modo = "administrativo";
+      render();
+    };
+  });
 
-function reabrirTurno(){
+  document.querySelectorAll("[data-conf]").forEach(btn => {
+    btn.onclick = () => {
+      state.conf = parseInt(btn.getAttribute("data-conf"));
+      render();
+    };
+  });
 
-  const ok=
-    confirm(
-      "Deseja reabrir este turno para edição?"
-    );
+  const dataEl = document.getElementById("data");
+  if (dataEl) {
+    dataEl.onchange = (e) => {
+      state.data = e.target.value;
+      state.dia = carregarDia();
+      render();
+    };
+  }
 
-  if(!ok)return;
-
-  state.dia
-    .conferencias[state.conf]
-    .finalizado=false;
-
-  state.dia
-    .conferencias[state.conf]
-    .finalizadoEm=null;
-
-  salvarDia();
-
-  toast(
-    "Turno reaberto."
-  );
-
-  render();
+  const respEl = document.getElementById("responsavel");
+  if (respEl) {
+    respEl.onchange = (e) => alterarResponsavel(e.target.value);
+  }
 }
 
-/* ============================================================
-   EVENTOS
-============================================================ */
-
-function bind(){
-
-  /* Modo recepção */
-
-  document
-    .querySelectorAll(
-      '[data-action="recepcao"]'
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        state.modo="recepcao";
-
-        render();
-      };
-
-    });
-
-  /* Modo administrativo */
-
-  document
-    .querySelectorAll(
-      '[data-action="admin"]'
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        state.modo="administrativo";
-
-        render();
-      };
-
-    });
-
-  /* Data recepção */
-
-  const data=
-    document.getElementById("data");
-
-  if(data){
-
-    data.onchange=e=>{
-
-      state.data=e.target.value;
-
-      state.conf=0;
-
-      state.dia=
-        carregarDia();
-
-      render();
-    };
-  }
-
-  /* Data admin */
-
-  const dataAdmin=
-    document.getElementById("data-admin");
-
-  if(dataAdmin){
-
-    dataAdmin.onchange=e=>{
-
-      state.data=
-        e.target.value;
-
-      state.dia=
-        carregarDia();
-
-      render();
-    };
-  }
-
-  /* Turnos */
-
-  document
-    .querySelectorAll(
-      "[data-conf]"
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        state.conf=
-          Number(
-            btn.dataset.conf
-          );
-
-        render();
-      };
-
-    });
-
-  /* Responsável */
-
-  const responsavel=
-    document.getElementById(
-      "responsavel"
-    );
-
-  if(responsavel){
-
-    responsavel.onchange=e=>{
-
-      alterarResponsavel(
-        e.target.value
-      );
-
-    };
-  }
-
-  /*
-    Reposição / vendido
-
-    FIX PRINCIPAL:
-    Trocado de onchange para oninput.
-
-    onchange só dispara quando o campo perde o foco,
-    e cada chamada disparava um render() que recriava
-    todo o HTML (innerHTML), inclusive o próprio input
-    que estava sendo editado — por isso o valor
-    "sumia"/voltava vazio ao digitar.
-
-    oninput dispara a cada tecla digitada, e agora
-    alterarCampo() não chama mais render() completo:
-    ele atualiza só os números derivados (estoque atual,
-    faturado, totais) sem recriar o campo de texto,
-    então o valor digitado nunca é perdido.
-  */
-
-  document
-    .querySelectorAll(
-      "[data-prod]"
-    )
-    .forEach(input=>{
-
-      input.oninput=e=>{
-
-        alterarCampo(
-          Number(
-            e.target.dataset.prod
-          ),
-          e.target.dataset.campo,
-          e.target.value
-        );
-
-      };
-
-    });
-
-  /* Ajuste manual (mesma correção acima) */
-
-  document
-    .querySelectorAll(
-      "[data-ajuste]"
-    )
-    .forEach(input=>{
-
-      input.oninput=e=>{
-
-        ajustarEstoque(
-          Number(
-            e.target.dataset.ajuste
-          ),
-          e.target.value
-        );
-
-      };
-
-    });
-
-  /* Finalizar */
-
-  const finalizar=
-    document.getElementById(
-      "finalizar"
-    );
-
-  if(finalizar){
-
-    finalizar.onclick=
-      finalizarTurno;
-  }
-
-  /* Reabrir */
-
-  const reabrir=
-    document.getElementById(
-      "reabrir"
-    );
-
-  if(reabrir){
-
-    reabrir.onclick=
-      reabrirTurno;
-  }
-
-  /* WhatsApp */
-
-  const whats=
-    document.getElementById(
-      "whatsapp"
-    );
-
-  if(whats){
-
-    whats.onclick=
-      enviarWhatsApp;
-  }
-
-  const whatsDia=
-    document.getElementById(
-      "whatsapp-dia"
-    );
-
-  if(whatsDia){
-
-    whatsDia.onclick=
-      enviarDia;
-  }
-
-  const whatsDiaAdmin=
-    document.getElementById(
-      "whatsapp-dia-admin"
-    );
-
-  if(whatsDiaAdmin){
-
-    whatsDiaAdmin.onclick=
-      enviarDia;
-  }
-
-  /* Abas admin */
-
-  document
-    .querySelectorAll(
-      "[data-aba]"
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        state.abaAdmin=
-          btn.dataset.aba;
-
-        render();
-      };
-
-    });
-
-  /* Novo produto */
-
-  const novo=
-    document.getElementById(
-      "novo-produto"
-    );
-
-  if(novo){
-
-    novo.onclick=()=>{
-
-      state.modal={
-        id:null,
-        nome:"",
-        cat:"",
-        preco:"",
-        estoqueInicial:0
-      };
-
-      render();
-    };
-  }
-
-  /* Editar produto */
-
-  document
-    .querySelectorAll(
-      "[data-editar]"
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        const produto=
-          state.produtos.find(
-            p=>p.id===
-              Number(
-                btn.dataset.editar
-              )
-          );
-
-        if(produto){
-
-          state.modal={
-            ...produto
-          };
-
-          render();
-        }
-
-      };
-
-    });
-
-  /* Excluir */
-
-  document
-    .querySelectorAll(
-      "[data-excluir]"
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        excluirProduto(
-          Number(
-            btn.dataset.excluir
-          )
-        );
-
-      };
-
-    });
-
-  /* Form produto */
-
-  const form=
-    document.getElementById(
-      "form-produto"
-    );
-
-  if(form){
-
-    form.onsubmit=
-      salvarProduto;
-  }
-
-  /* Fechar modal */
-
-  const fechar=
-    document.getElementById(
-      "fechar-modal"
-    );
-
-  if(fechar){
-
-    fechar.onclick=()=>{
-
-      state.modal=null;
-
-      render();
-    };
-  }
-
-  /* Histórico */
-
-  document
-    .querySelectorAll(
-      "[data-historico]"
-    )
-    .forEach(btn=>{
-
-      btn.onclick=()=>{
-
-        state.data=
-          btn.dataset.historico;
-
-        state.conf=0;
-
-        state.dia=
-          carregarDia();
-
-        state.modo="recepcao";
-
-        render();
-      };
-
-    });
-}
-
-/* ============================================================
-   INICIALIZAÇÃO
-============================================================ */
-
-state.dia=
-  carregarDia();
-
+// Render Inicial
 render();
-
 </script>
-
 </body>
 </html>
