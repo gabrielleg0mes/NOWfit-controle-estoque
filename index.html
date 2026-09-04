@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NOWFIT CEDRO — Controle de Estoque & Turnos</title>
 
-  <!-- Lib do Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -358,7 +357,11 @@
     .secondary { background: #292929; color: #fff; }
     .excel { background: #0d9488; color: #fff; }
     .copy-btn { background: #0284c7; color: #fff; }
-    .danger { background: #ff4d4d18; color: #ff6666; border: 1px solid #ff4d4d44; }
+    .danger {
+      background: #ff4d4d18;
+      color: #ff6666;
+      border: 1px solid #ff4d4d44;
+    }
 
     .admin-tabs {
       display: flex;
@@ -460,11 +463,10 @@
       border-bottom: 1px solid #1a1a1a;
     }
 
-    .assinatura-area { display: none; }
+    .assinatura-area {
+      display: none;
+    }
 
-    /* ============================================================
-       ESTILOS DE IMPRESSÃO PROFISSIONAL (VERDE ESCURO + PRETO)
-    ============================================================ */
     @media print {
       @page {
         margin: 1.2cm;
@@ -476,7 +478,15 @@
         font-size: 10pt;
       }
 
-      .header, .toggle, .actions, .turnos, .admin-tabs, .btn, .alert-banner, .progress, .top {
+      .header,
+      .toggle,
+      .actions,
+      .turnos,
+      .admin-tabs,
+      .btn,
+      .alert-banner,
+      .progress,
+      .top {
         display: none !important;
       }
 
@@ -510,7 +520,6 @@
         padding: 10px !important;
       }
 
-      /* Tabela de Impressão */
       table {
         border-collapse: collapse !important;
         width: 100% !important;
@@ -558,7 +567,8 @@
         width: auto !important;
       }
 
-      .ok, .stock {
+      .ok,
+      .stock {
         color: #000000 !important;
         font-weight: bold !important;
       }
@@ -604,20 +614,43 @@
     }
 
     @media(max-width:800px) {
-      .turnos { grid-template-columns: repeat(3, 1fr); }
-      .kpis { grid-template-columns: 1fr; }
+      .turnos {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .kpis {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media(max-width:560px) {
-      .header { align-items: flex-start; }
-      .toggle { width: 100%; }
-      .toggle button { flex: 1; }
-      .turnos { grid-template-columns: repeat(2, 1fr); }
-      .container { padding: 13px 9px 50px; }
-      .actions .btn { width: 100%; }
+      .header {
+        align-items: flex-start;
+      }
+
+      .toggle {
+        width: 100%;
+      }
+
+      .toggle button {
+        flex: 1;
+      }
+
+      .turnos {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .container {
+        padding: 13px 9px 50px;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
+
 <body>
 
 <div id="app"></div>
@@ -628,13 +661,21 @@
 /* ============================================================
    CONFIGURAÇÃO DO SUPABASE
 ============================================================ */
+
 const SUPABASE_URL = 'https://clxmcteqxmegyuzbeqxu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNseG1jdGVxeG1lZ3l1emJlcXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MzAyNjYsImV4cCI6MjEwNDEwNjI2Nn0.0Sh9S5H9_nBNnDbz3P2Ux1n4itoxvSDZtdHA9crE6aE';
-const db = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjbHhtY3RlcXFtZWd5dXpiZXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MzAyNjYsImV4cCI6MjEwNDEwNjI2Nn0.0Sh9S5H9_nBNnDbz3P2Ux1n4itoxvSDZtdHA9crE6aE';
+
+const db = window.supabase
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
 
 /* ============================================================
-   PRODUTOS PADRÃO E TURNOS
+   PRODUTOS
 ============================================================ */
+
 const PRODUTOS_PADRAO = [
   {id:1, nome:"Coca-Cola Zero", cat:"Bebida", preco:3.99, estoqueInicial:11},
   {id:2, nome:"YoPRO Coco e Batata Doce", cat:"Suplemento", preco:10.00, estoqueInicial:6},
@@ -653,6 +694,11 @@ const PRODUTOS_PADRAO = [
   {id:15, nome:"Água Cristal", cat:"Bebida", preco:2.99, estoqueInicial:16}
 ];
 
+
+/* ============================================================
+   TURNOS
+============================================================ */
+
 const CONFERENCIAS = [
   {id:"m_entrada", turno:"Manhã", tipo:"Entrada", hora:"05:00"},
   {id:"m_saida", turno:"Manhã", tipo:"Saída", hora:"11:00"},
@@ -662,11 +708,17 @@ const CONFERENCIAS = [
   {id:"n_saida", turno:"Noite", tipo:"Saída", hora:"22:00"}
 ];
 
-const RESPONSAVEIS = ["Gabrielle", "Adryel", "Hugo"];
+const RESPONSAVEIS = [
+  "Gabrielle",
+  "Adryel",
+  "Hugo"
+];
+
 
 /* ============================================================
-   ESTADO DA APLICAÇÃO
+   ESTADO
 ============================================================ */
+
 let state = {
   modo: "recepcao",
   abaAdmin: "resumo",
@@ -679,24 +731,40 @@ let state = {
   logs: carregarLogs()
 };
 
+
 /* ============================================================
    UTILITÁRIOS
 ============================================================ */
+
 function hoje() {
   const d = new Date();
-  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  const local = new Date(
+    d.getTime() - d.getTimezoneOffset() * 60000
+  );
+
   return local.toISOString().slice(0, 10);
 }
 
+
 function dinheiro(v) {
-  return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  return Number(v || 0).toLocaleString(
+    "pt-BR",
+    {
+      style: "currency",
+      currency: "BRL"
+    }
+  );
 }
+
 
 function dataBR(v) {
   if (!v) return "—";
+
   const [a, m, d] = v.split("-");
+
   return `${d}/${m}/${a}`;
 }
+
 
 function esc(v) {
   return String(v ?? "")
@@ -706,797 +774,2632 @@ function esc(v) {
     .replace(/>/g, "&gt;");
 }
 
-function carregarLogs() {
-  try {
-    return JSON.parse(localStorage.getItem("nowfit_logs")) || [];
-  } catch(e) { return []; }
-}
-
-function registrarLog(msg) {
-  const timestamp = new Date().toLocaleTimeString("pt-BR");
-  state.logs.unshift(`[${timestamp}] ${msg}`);
-  localStorage.setItem("nowfit_logs", JSON.stringify(state.logs.slice(0, 50)));
-}
 
 /* ============================================================
-   GERENCIAMENTO DE PRODUTOS E DIAS
+   LOGS
 ============================================================ */
+
+function carregarLogs() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("nowfit_logs")
+    ) || [];
+  } catch(e) {
+    return [];
+  }
+}
+
+
+function registrarLog(msg) {
+  const timestamp =
+    new Date().toLocaleTimeString("pt-BR");
+
+  state.logs.unshift(
+    `[${timestamp}] ${msg}`
+  );
+
+  localStorage.setItem(
+    "nowfit_logs",
+    JSON.stringify(state.logs.slice(0, 50))
+  );
+}
+
+
+/* ============================================================
+   PRODUTOS
+============================================================ */
+
 function carregarProdutos() {
   try {
-    const raw = localStorage.getItem("nowfit_cedro_produtos");
+
+    const raw =
+      localStorage.getItem(
+        "nowfit_cedro_produtos"
+      );
+
     if (raw) {
-      const produtos = JSON.parse(raw);
-      if (Array.isArray(produtos)) return produtos;
+
+      const produtos =
+        JSON.parse(raw);
+
+      if (Array.isArray(produtos)) {
+        return produtos;
+      }
     }
+
   } catch (e) {}
 
-  const copia = JSON.parse(JSON.stringify(PRODUTOS_PADRAO));
-  localStorage.setItem("nowfit_cedro_produtos", JSON.stringify(copia));
+  const copia =
+    JSON.parse(
+      JSON.stringify(PRODUTOS_PADRAO)
+    );
+
+  localStorage.setItem(
+    "nowfit_cedro_produtos",
+    JSON.stringify(copia)
+  );
+
   return copia;
 }
 
+
 function salvarProdutos() {
-  localStorage.setItem("nowfit_cedro_produtos", JSON.stringify(state.produtos));
+  localStorage.setItem(
+    "nowfit_cedro_produtos",
+    JSON.stringify(state.produtos)
+  );
 }
+
+
+/* ============================================================
+   REGISTROS
+============================================================ */
 
 function novoRegistro() {
+
   const produtos = {};
+
   state.produtos.forEach(p => {
-    produtos[p.id] = { reposicao: "", vendido: "", ajuste: null };
+
+    produtos[p.id] = {
+      reposicao: "",
+      vendido: "",
+      ajuste: null
+    };
+
   });
-  return { responsavel: "", produtos, finalizado: false, finalizadoEm: null };
+
+  return {
+    responsavel: "",
+    produtos,
+    finalizado: false,
+    finalizadoEm: null
+  };
 }
 
+
 function novoDia() {
-  const dia = { versao: 3, estoqueInicial: {}, conferencias: [] };
+
+  const dia = {
+    versao: 3,
+    estoqueInicial: {},
+    conferencias: []
+  };
+
   state.produtos.forEach(p => {
-    dia.estoqueInicial[p.id] = Number(p.estoqueInicial || 0);
+
+    dia.estoqueInicial[p.id] =
+      Number(p.estoqueInicial || 0);
+
   });
-  for (let i = 0; i < CONFERENCIAS.length; i++) {
-    dia.conferencias.push(novoRegistro());
+
+
+  for (
+    let i = 0;
+    i < CONFERENCIAS.length;
+    i++
+  ) {
+
+    dia.conferencias.push(
+      novoRegistro()
+    );
+
   }
+
   return dia;
 }
+
 
 function chaveDia() {
   return "nowfit_cedro_dia:" + state.data;
 }
 
+
 function carregarDia() {
+
   try {
-    const raw = localStorage.getItem(chaveDia());
+
+    const raw =
+      localStorage.getItem(
+        chaveDia()
+      );
+
     if (raw) {
-      const dia = JSON.parse(raw);
-      if (!dia.estoqueInicial) dia.estoqueInicial = {};
-      if (!Array.isArray(dia.conferencias)) dia.conferencias = [];
-      while (dia.conferencias.length < CONFERENCIAS.length) {
-        dia.conferencias.push(novoRegistro());
+
+      const dia =
+        JSON.parse(raw);
+
+      if (!dia.estoqueInicial) {
+        dia.estoqueInicial = {};
       }
+
+      if (!Array.isArray(dia.conferencias)) {
+        dia.conferencias = [];
+      }
+
+
+      while (
+        dia.conferencias.length <
+        CONFERENCIAS.length
+      ) {
+
+        dia.conferencias.push(
+          novoRegistro()
+        );
+
+      }
+
+
       state.produtos.forEach(p => {
-        if (dia.estoqueInicial[p.id] === undefined) {
-          dia.estoqueInicial[p.id] = Number(p.estoqueInicial || 0);
+
+        if (
+          dia.estoqueInicial[p.id] ===
+          undefined
+        ) {
+
+          dia.estoqueInicial[p.id] =
+            Number(p.estoqueInicial || 0);
+
         }
+
+
         dia.conferencias.forEach(reg => {
-          if (!reg.produtos) reg.produtos = {};
-          if (!reg.produtos[p.id]) {
-            reg.produtos[p.id] = { reposicao: "", vendido: "", ajuste: null };
+
+          if (!reg.produtos) {
+            reg.produtos = {};
           }
+
+          if (!reg.produtos[p.id]) {
+
+            reg.produtos[p.id] = {
+              reposicao: "",
+              vendido: "",
+              ajuste: null
+            };
+
+          }
+
         });
+
       });
+
+
       return dia;
     }
+
   } catch (e) {}
+
   return novoDia();
 }
 
+
 function salvarDia() {
-  localStorage.setItem(chaveDia(), JSON.stringify(state.dia));
+
+  localStorage.setItem(
+    chaveDia(),
+    JSON.stringify(state.dia)
+  );
+
 }
+
 
 state.dia = carregarDia();
 
+
 /* ============================================================
-   CÁLCULOS DE ESTOQUE
+   CÁLCULO DO ESTOQUE
 ============================================================ */
+
 function estoqueAnterior(index, pid) {
+
   if (index === 0) {
-    return Number(state.dia.estoqueInicial[pid] || 0);
+
+    return Number(
+      state.dia.estoqueInicial[pid] || 0
+    );
+
   }
-  return estoqueFinal(index - 1, pid);
+
+  return estoqueFinal(
+    index - 1,
+    pid
+  );
 }
+
 
 function estoqueFinal(index, pid) {
-  const anterior = estoqueAnterior(index, pid);
-  const registro = state.dia.conferencias[index];
-  const item = registro?.produtos?.[pid] || {};
 
-  if (item.ajuste !== null && item.ajuste !== undefined && item.ajuste !== "") {
+  const anterior =
+    estoqueAnterior(index, pid);
+
+  const registro =
+    state.dia.conferencias[index];
+
+  const item =
+    registro?.produtos?.[pid] || {};
+
+
+  if (
+    item.ajuste !== null &&
+    item.ajuste !== undefined &&
+    item.ajuste !== ""
+  ) {
+
     return Number(item.ajuste) || 0;
+
   }
 
-  const reposicao = Number(item.reposicao) || 0;
-  const vendido = Number(item.vendido) || 0;
-  return anterior + reposicao - vendido;
+
+  const reposicao =
+    Number(item.reposicao) || 0;
+
+  const vendido =
+    Number(item.vendido) || 0;
+
+
+  return anterior +
+    reposicao -
+    vendido;
 }
 
+
 /* ============================================================
-   AÇÕES E MANIPULAÇÃO DE TURNOS
+   ALTERAÇÕES
 ============================================================ */
+
 function finalizarTurno() {
+
   const index = state.conf;
-  const registro = state.dia.conferencias[index];
+
+  const registro =
+    state.dia.conferencias[index];
+
 
   if (!registro.responsavel) {
-    toast("Selecione o responsável antes de finalizar o turno.", true);
+
+    toast(
+      "Selecione o responsável antes de finalizar o turno.",
+      true
+    );
+
     return;
   }
 
+
   registro.finalizado = true;
-  registro.finalizadoEm = new Date().toISOString();
+
+  registro.finalizadoEm =
+    new Date().toISOString();
+
+
   salvarDia();
 
-  registrarLog(`Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) finalizado por ${registro.responsavel}.`);
 
-  if (index < CONFERENCIAS.length - 1) {
-    state.conf = index + 1;
-    toast("Turno finalizado! Avançando para o próximo turno.");
+  registrarLog(
+    `Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) finalizado por ${registro.responsavel}.`
+  );
+
+
+  if (
+    index <
+    CONFERENCIAS.length - 1
+  ) {
+
+    state.conf =
+      index + 1;
+
+    toast(
+      "Turno finalizado! Avançando para o próximo turno."
+    );
+
   } else {
-    toast("Último turno finalizado! Dia encerrado.");
+
+    toast(
+      "Último turno finalizado! Dia encerrado."
+    );
+
   }
+
+
   render();
 }
+
 
 function reabrirTurno() {
+
   const index = state.conf;
-  const registro = state.dia.conferencias[index];
+
+  const registro =
+    state.dia.conferencias[index];
+
 
   registro.finalizado = false;
+
   registro.finalizadoEm = null;
+
+
   salvarDia();
 
-  registrarLog(`Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) foi REABERTO.`);
-  toast("Turno reaberto para edições!");
+
+  registrarLog(
+    `Turno ${CONFERENCIAS[index].turno} (${CONFERENCIAS[index].tipo}) foi REABERTO.`
+  );
+
+
+  toast(
+    "Turno reaberto para edições!"
+  );
+
   render();
 }
 
-function alterarCampo(pid, campo, valor) {
-  const registro = state.dia.conferencias[state.conf];
+
+function alterarCampo(
+  pid,
+  campo,
+  valor
+) {
+
+  const registro =
+    state.dia.conferencias[state.conf];
+
+
   if (registro.finalizado) return;
 
+
   if (!registro.produtos[pid]) {
-    registro.produtos[pid] = { reposicao: "", vendido: "", ajuste: null };
+
+    registro.produtos[pid] = {
+      reposicao: "",
+      vendido: "",
+      ajuste: null
+    };
+
   }
-  registro.produtos[pid][campo] = valor;
+
+
+  registro.produtos[pid][campo] =
+    valor;
+
+
   salvarDia();
+
   atualizarLinhaProduto(pid);
+
   atualizarTotais();
 }
+
 
 function alterarResponsavel(valor) {
-  state.dia.conferencias[state.conf].responsavel = valor;
+
+  state.dia.conferencias[
+    state.conf
+  ].responsavel = valor;
+
   salvarDia();
 }
 
-function ajustarEstoque(pid, valor) {
-  const registro = state.dia.conferencias[state.conf];
+
+function ajustarEstoque(
+  pid,
+  valor
+) {
+
+  const registro =
+    state.dia.conferencias[state.conf];
+
+
   if (!registro.produtos[pid]) {
-    registro.produtos[pid] = { reposicao: "", vendido: "", ajuste: null };
+
+    registro.produtos[pid] = {
+      reposicao: "",
+      vendido: "",
+      ajuste: null
+    };
+
   }
-  registro.produtos[pid].ajuste = valor === "" ? null : Number(valor);
+
+
+  registro.produtos[pid].ajuste =
+    valor === ""
+      ? null
+      : Number(valor);
+
+
   salvarDia();
+
   atualizarLinhaProduto(pid);
+
   atualizarLinhaAjuste(pid);
+
   atualizarTotais();
 }
 
-/* ============================================================
-   ATUALIZAÇÕES DINÂMICAS DO DOM
-============================================================ */
-function atualizarLinhaProduto(pid) {
-  const registro = state.dia.conferencias[state.conf];
-  const item = registro.produtos[pid] || {};
-  const atual = estoqueFinal(state.conf, pid);
-  const vendido = Number(item.vendido) || 0;
-  const produto = state.produtos.find(p => p.id === pid);
-  const faturado = vendido * Number(produto?.preco || 0);
 
-  const linha = document.querySelector(`[data-linha-produto="${pid}"]`);
+/* ============================================================
+   ATUALIZAÇÕES DINÂMICAS
+============================================================ */
+
+function atualizarLinhaProduto(pid) {
+
+  const registro =
+    state.dia.conferencias[state.conf];
+
+  const item =
+    registro.produtos[pid] || {};
+
+
+  const atual =
+    estoqueFinal(
+      state.conf,
+      pid
+    );
+
+
+  const vendido =
+    Number(item.vendido) || 0;
+
+
+  const produto =
+    state.produtos.find(
+      p => p.id === pid
+    );
+
+
+  const faturado =
+    vendido *
+    Number(produto?.preco || 0);
+
+
+  const linha =
+    document.querySelector(
+      `[data-linha-produto="${pid}"]`
+    );
+
+
   if (!linha) return;
 
-  const celAnterior = linha.querySelector("[data-cel-anterior]");
-  if (celAnterior) celAnterior.textContent = estoqueAnterior(state.conf, pid);
 
-  const celAtual = linha.querySelector("[data-cel-atual]");
-  if (celAtual) {
-    celAtual.textContent = atual;
-    celAtual.classList.toggle("neg", atual < 0);
-    celAtual.classList.toggle("ok", atual >= 0);
+  const celAnterior =
+    linha.querySelector(
+      "[data-cel-anterior]"
+    );
+
+
+  if (celAnterior) {
+
+    celAnterior.textContent =
+      estoqueAnterior(
+        state.conf,
+        pid
+      );
+
   }
 
-  const celFaturado = linha.querySelector("[data-cel-faturado]");
-  if (celFaturado) celFaturado.textContent = dinheiro(faturado);
+
+  const celAtual =
+    linha.querySelector(
+      "[data-cel-atual]"
+    );
+
+
+  if (celAtual) {
+
+    celAtual.textContent =
+      atual;
+
+    celAtual.classList.toggle(
+      "neg",
+      atual < 0
+    );
+
+    celAtual.classList.toggle(
+      "ok",
+      atual >= 0
+    );
+
+  }
+
+
+  const celFaturado =
+    linha.querySelector(
+      "[data-cel-faturado]"
+    );
+
+
+  if (celFaturado) {
+
+    celFaturado.textContent =
+      dinheiro(faturado);
+
+  }
 }
+
 
 function atualizarLinhaAjuste(pid) {
-  const linha = document.querySelector(`[data-linha-ajuste="${pid}"]`);
+
+  const linha =
+    document.querySelector(
+      `[data-linha-ajuste="${pid}"]`
+    );
+
+
   if (!linha) return;
 
-  const registro = state.dia.conferencias[state.conf];
-  const item = registro.produtos[pid] || {};
-  const anterior = estoqueAnterior(state.conf, pid);
-  const reposicao = Number(item.reposicao) || 0;
-  const vendido = Number(item.vendido) || 0;
-  const calculado = anterior + reposicao - vendido;
 
-  const calculadoEl = linha.querySelector("[data-cel-calculado]");
-  if (calculadoEl) calculadoEl.textContent = calculado;
+  const registro =
+    state.dia.conferencias[state.conf];
 
-  const ajuste = item.ajuste;
-  const transferido = (ajuste !== null && ajuste !== undefined && ajuste !== "") ? Number(ajuste) : calculado;
 
-  const transferidoEl = linha.querySelector("[data-cel-transferido]");
-  if (transferidoEl) transferidoEl.textContent = transferido;
+  const item =
+    registro.produtos[pid] || {};
+
+
+  const anterior =
+    estoqueAnterior(
+      state.conf,
+      pid
+    );
+
+
+  const reposicao =
+    Number(item.reposicao) || 0;
+
+
+  const vendido =
+    Number(item.vendido) || 0;
+
+
+  const calculado =
+    anterior +
+    reposicao -
+    vendido;
+
+
+  const calculadoEl =
+    linha.querySelector(
+      "[data-cel-calculado]"
+    );
+
+
+  if (calculadoEl) {
+
+    calculadoEl.textContent =
+      calculado;
+
+  }
+
+
+  const ajuste =
+    item.ajuste;
+
+
+  const transferido =
+    (
+      ajuste !== null &&
+      ajuste !== undefined &&
+      ajuste !== ""
+    )
+      ? Number(ajuste)
+      : calculado;
+
+
+  const transferidoEl =
+    linha.querySelector(
+      "[data-cel-transferido]"
+    );
+
+
+  if (transferidoEl) {
+
+    transferidoEl.textContent =
+      transferido;
+
+  }
 }
+
 
 function atualizarTotais() {
-  const registro = state.dia.conferencias[state.conf];
+
+  const registro =
+    state.dia.conferencias[
+      state.conf
+    ];
+
+
   let totalQtd = 0;
+
   let totalFat = 0;
 
+
   state.produtos.forEach(p => {
-    const item = registro.produtos[p.id] || {};
-    const qtd = Number(item.vendido) || 0;
+
+    const item =
+      registro.produtos[p.id] || {};
+
+
+    const qtd =
+      Number(item.vendido) || 0;
+
+
     totalQtd += qtd;
-    totalFat += qtd * Number(p.preco || 0);
+
+
+    totalFat +=
+      qtd *
+      Number(p.preco || 0);
+
   });
 
-  const qtdEl = document.querySelector("[data-total-qtd]");
-  if (qtdEl) qtdEl.textContent = totalQtd;
 
-  const fatEl = document.querySelector("[data-total-fat]");
-  if (fatEl) fatEl.textContent = dinheiro(totalFat);
+  const qtdEl =
+    document.querySelector(
+      "[data-total-qtd]"
+    );
+
+
+  if (qtdEl) {
+
+    qtdEl.textContent =
+      totalQtd;
+
+  }
+
+
+  const fatEl =
+    document.querySelector(
+      "[data-total-fat]"
+    );
+
+
+  if (fatEl) {
+
+    fatEl.textContent =
+      dinheiro(totalFat);
+
+  }
 }
 
-function toast(msg, erro = false) {
-  state.toast = { msg, erro };
+
+function toast(
+  msg,
+  erro = false
+) {
+
+  state.toast = {
+    msg,
+    erro
+  };
+
+
   render();
+
+
   setTimeout(() => {
+
     state.toast = null;
+
     render();
+
   }, 3000);
 }
 
+
 /* ============================================================
-   EXPORTAÇÃO E INTEGRAÇÕES
+   ESTOQUE BAIXO
 ============================================================ */
+
 function obterProdutosBaixoEstoque() {
-  return state.produtos.filter(p => estoqueFinal(state.conf, p.id) < 5);
+
+  return state.produtos.filter(
+    p =>
+      estoqueFinal(
+        state.conf,
+        p.id
+      ) < 5
+  );
 }
+
+
+/* ============================================================
+   WHATSAPP
+   AGORA MOSTRA:
+   ESTOQUE ANTERIOR → ESTOQUE ATUAL
+============================================================ */
 
 function textoConferencia() {
-  const conf = CONFERENCIAS[state.conf];
-  const registro = state.dia.conferencias[state.conf];
-  let totalQtd = 0, totalFat = 0, totalReposto = 0;
-  let linhasVendas = "", linhasReposicao = "";
+
+  const conf =
+    CONFERENCIAS[state.conf];
+
+  const registro =
+    state.dia.conferencias[state.conf];
+
+
+  let totalQtd = 0;
+
+  let totalFat = 0;
+
+  let totalReposto = 0;
+
+
+  let linhasEstoque = "";
+
+  let linhasVendas = "";
+
+  let linhasReposicao = "";
+
 
   state.produtos.forEach(p => {
-    const item = registro.produtos[p.id] || {};
-    const qtd = Number(item.vendido) || 0;
-    const reposto = Number(item.reposicao) || 0;
+
+    const item =
+      registro.produtos[p.id] || {};
+
+
+    const anterior =
+      estoqueAnterior(
+        state.conf,
+        p.id
+      );
+
+
+    const atual =
+      estoqueFinal(
+        state.conf,
+        p.id
+      );
+
+
+    const qtd =
+      Number(item.vendido) || 0;
+
+
+    const reposto =
+      Number(item.reposicao) || 0;
+
+
+    const diferenca =
+      atual - anterior;
+
+
+    let indicador;
+
+
+    if (diferenca < 0) {
+
+      indicador =
+        `📉 ${diferenca} un.`;
+
+    } else if (diferenca > 0) {
+
+      indicador =
+        `📈 +${diferenca} un.`;
+
+    } else {
+
+      indicador =
+        `➡️ 0 un.`;
+
+    }
+
+
+    /* ------------------------------------
+       COMPARATIVO DE ESTOQUE
+    ------------------------------------ */
+
+    linhasEstoque +=
+      `• ${p.nome}: *${anterior} → ${atual} un.* ${indicador}\n`;
+
+
+    /* ------------------------------------
+       VENDAS
+    ------------------------------------ */
 
     if (qtd > 0) {
-      const fat = qtd * Number(p.preco || 0);
+
+      const fat =
+        qtd *
+        Number(p.preco || 0);
+
+
       totalQtd += qtd;
+
       totalFat += fat;
-      linhasVendas += `• ${p.nome}: ${qtd}x — ${dinheiro(fat)}\n`;
+
+
+      linhasVendas +=
+        `• ${p.nome}: ${qtd}x — ${dinheiro(fat)}\n`;
     }
+
+
+    /* ------------------------------------
+       REPOSIÇÃO
+    ------------------------------------ */
 
     if (reposto > 0) {
-      totalReposto += reposto;
-      linhasReposicao += `• ${p.nome}: +${reposto}\n`;
+
+      totalReposto +=
+        reposto;
+
+
+      linhasReposicao +=
+        `• ${p.nome}: +${reposto} un.\n`;
     }
+
   });
 
-  const produtosBaixow = obterProdutosBaixoEstoque();
+
+  /* ------------------------------------
+     ALERTAS
+  ------------------------------------ */
+
+  const produtosBaixo =
+    state.produtos.filter(
+      p =>
+        estoqueFinal(
+          state.conf,
+          p.id
+        ) < 5
+    );
+
+
   let textoAlertas = "";
-  if (produtosBaixow.length > 0) {
-    textoAlertas = produtosBaixow.map(p => `🚨 *${p.nome}*: Restam apenas ${estoqueFinal(state.conf, p.id)} un.`).join("\n");
+
+
+  if (produtosBaixo.length > 0) {
+
+    textoAlertas =
+      produtosBaixo
+        .map(p =>
+          `🚨 *${p.nome}*: ${estoqueFinal(state.conf, p.id)} un.`
+        )
+        .join("\n");
+
   } else {
-    textoAlertas = "✅ Todos os produtos com estoque adequado.";
+
+    textoAlertas =
+      "✅ Todos os produtos com estoque adequado.";
+
   }
 
-  return `*NOWFIT CEDRO — CONFERÊNCIA*\n` +
+
+  /* ------------------------------------
+     MENSAGEM FINAL
+  ------------------------------------ */
+
+  return (
+    `*NOWFIT CEDRO — CONFERÊNCIA*\n` +
+
     `*${conf.turno} — ${conf.tipo}*\n` +
+
     `Data: ${dataBR(state.data)}\n` +
+
     `Horário: ${conf.hora}\n` +
+
     `Responsável: ${registro.responsavel || "—"}\n\n` +
-    `*REPOSIÇÃO*\n` + (linhasReposicao || "Nenhuma reposição registrada.\n") +
-    `Total reposto: ${totalReposto}\n\n` +
-    `*VENDAS*\n` + (linhasVendas || "Nenhuma venda registrada.\n") +
+
+
+    `*📦 COMPARATIVO DE ESTOQUE*\n` +
+
+    `Anterior → Agora\n\n` +
+
+    (
+      linhasEstoque ||
+      "Nenhum produto registrado.\n"
+    ) +
+
+
+    `\n*🔄 REPOSIÇÃO*\n` +
+
+    (
+      linhasReposicao ||
+      "Nenhuma reposição registrada.\n"
+    ) +
+
+    `Total reposto: ${totalReposto} un.\n\n` +
+
+
+    `*🛒 VENDAS*\n` +
+
+    (
+      linhasVendas ||
+      "Nenhuma venda registrada.\n"
+    ) +
+
+
     `\n*Itens vendidos:* ${totalQtd}\n` +
+
     `*Faturamento:* ${dinheiro(totalFat)}\n\n` +
-    `*ESTOQUE BAIXO (<5 un):*\n` + textoAlertas;
+
+
+    `*🚨 ESTOQUE BAIXO (<5 un.)*\n` +
+
+    textoAlertas
+  );
 }
+
 
 function enviarWhatsApp() {
-  window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(textoConferencia()), "_blank");
+
+  const texto =
+    textoConferencia();
+
+
+  window.open(
+    "https://api.whatsapp.com/send?text=" +
+    encodeURIComponent(texto),
+    "_blank"
+  );
 }
+
 
 function copiarTextoPlanilha() {
-  const txt = textoConferencia();
-  navigator.clipboard.writeText(txt).then(() => {
-    toast("Dados do turno copiados com sucesso!");
-  }).catch(() => {
-    toast("Erro ao copiar os dados.", true);
-  });
+
+  const txt =
+    textoConferencia();
+
+
+  navigator.clipboard
+    .writeText(txt)
+    .then(() => {
+
+      toast(
+        "Dados do turno copiados com sucesso!"
+      );
+
+    })
+    .catch(() => {
+
+      toast(
+        "Erro ao copiar os dados.",
+        true
+      );
+
+    });
 }
+
+
+/* ============================================================
+   EXPORTAR CSV
+============================================================ */
 
 function exportarExcelCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,ID,Produto,Categoria,Preco (RS),Estoque Inicial,Vendidos,Estoque Atual,Status\n";
-  const registro = state.dia.conferencias[state.conf];
+
+  let csvContent =
+    "data:text/csv;charset=utf-8," +
+    "ID,Produto,Categoria,Preco (RS),Estoque Anterior,Vendidos,Estoque Atual,Status\n";
+
+
+  const registro =
+    state.dia.conferencias[
+      state.conf
+    ];
+
 
   state.produtos.forEach(p => {
-    const item = registro.produtos[p.id] || {};
-    const atual = estoqueFinal(state.conf, p.id);
-    const status = atual < 5 ? "ESTOQUE BAIXO" : "OK";
-    csvContent += `${p.id},"${p.nome}","${p.cat}",${p.preco},${estoqueAnterior(state.conf, p.id)},${item.vendido||0},${atual},${status}\n`;
+
+    const item =
+      registro.produtos[p.id] || {};
+
+
+    const anterior =
+      estoqueAnterior(
+        state.conf,
+        p.id
+      );
+
+
+    const atual =
+      estoqueFinal(
+        state.conf,
+        p.id
+      );
+
+
+    const status =
+      atual < 5
+        ? "ESTOQUE BAIXO"
+        : "OK";
+
+
+    csvContent +=
+      `${p.id},"${p.nome}","${p.cat}",${p.preco},${anterior},${item.vendido || 0},${atual},${status}\n`;
+
   });
 
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `estoque_nowfit_${state.data}_turno${state.conf+1}.csv`);
+
+  const encodedUri =
+    encodeURI(csvContent);
+
+
+  const link =
+    document.createElement("a");
+
+
+  link.setAttribute(
+    "href",
+    encodedUri
+  );
+
+
+  link.setAttribute(
+    "download",
+    `estoque_nowfit_${state.data}_turno${state.conf + 1}.csv`
+  );
+
+
   document.body.appendChild(link);
+
   link.click();
+
   document.body.removeChild(link);
 }
+
 
 function imprimirRelatorioPDF() {
   window.print();
 }
 
+
 /* ============================================================
-   CÁLCULOS DO ADMINISTRATIVO
+   RESUMO ADMINISTRATIVO
 ============================================================ */
+
 function calcularResumo() {
-  let faturamento = 0, vendidos = 0, estoque = 0, repostoTotal = 0;
-  const porTurno = { Manhã: 0, Tarde: 0, Noite: 0 };
+
+  let faturamento = 0;
+
+  let vendidos = 0;
+
+  let estoque = 0;
+
+  let repostoTotal = 0;
+
+
+  const porTurno = {
+    Manhã: 0,
+    Tarde: 0,
+    Noite: 0
+  };
+
+
   const porProduto = {};
 
+
   state.produtos.forEach(p => {
-    porProduto[p.id] = { nome: p.nome, qtd: 0, fat: 0, reposto: 0 };
-    let final = Number(state.dia.estoqueInicial[p.id] || 0);
 
-    CONFERENCIAS.forEach((conf, index) => {
-      const registro = state.dia.conferencias[index];
-      const item = registro?.produtos?.[p.id] || {};
-      const qtd = Number(item.vendido) || 0;
-      const reposicao = Number(item.reposicao) || 0;
-      const fat = qtd * Number(p.preco || 0);
+    porProduto[p.id] = {
+      nome: p.nome,
+      qtd: 0,
+      fat: 0,
+      reposto: 0
+    };
 
-      faturamento += fat;
-      vendidos += qtd;
-      repostoTotal += reposicao;
-      porTurno[conf.turno] += fat;
 
-      porProduto[p.id].qtd += qtd;
-      porProduto[p.id].fat += fat;
-      porProduto[p.id].reposto += reposicao;
+    let final =
+      Number(
+        state.dia.estoqueInicial[p.id] || 0
+      );
 
-      if (item.ajuste !== null && item.ajuste !== undefined && item.ajuste !== "") {
-        final = Number(item.ajuste) || 0;
-      } else {
-        final = final + reposicao - qtd;
+
+    CONFERENCIAS.forEach(
+      (conf, index) => {
+
+        const registro =
+          state.dia.conferencias[index];
+
+
+        const item =
+          registro?.produtos?.[p.id] || {};
+
+
+        const qtd =
+          Number(item.vendido) || 0;
+
+
+        const reposicao =
+          Number(item.reposicao) || 0;
+
+
+        const fat =
+          qtd *
+          Number(p.preco || 0);
+
+
+        faturamento += fat;
+
+        vendidos += qtd;
+
+        repostoTotal += reposicao;
+
+
+        porTurno[conf.turno] +=
+          fat;
+
+
+        porProduto[p.id].qtd +=
+          qtd;
+
+
+        porProduto[p.id].fat +=
+          fat;
+
+
+        porProduto[p.id].reposto +=
+          reposicao;
+
+
+        if (
+          item.ajuste !== null &&
+          item.ajuste !== undefined &&
+          item.ajuste !== ""
+        ) {
+
+          final =
+            Number(item.ajuste) || 0;
+
+        } else {
+
+          final =
+            final +
+            reposicao -
+            qtd;
+
+        }
+
       }
-    });
+    );
+
 
     estoque += final;
+
   });
 
-  return { faturamento, vendidos, estoque, repostoTotal, porTurno, porProduto };
+
+  return {
+    faturamento,
+    vendidos,
+    estoque,
+    repostoTotal,
+    porTurno,
+    porProduto
+  };
 }
 
+
 /* ============================================================
-   INTERFACE DE USUÁRIO (RENDER)
+   RENDER
 ============================================================ */
+
 function render() {
-  const app = document.getElementById("app");
-  app.innerHTML = renderHeader() +
-    (state.modo === "recepcao" ? renderRecepcao() : renderAdmin()) +
-    (state.modal ? renderModal() : "") +
-    (state.toast ? `<div class="toast" style="background:${state.toast.erro ? "#ff4d4d" : "#c6ff00"}">${esc(state.toast.msg)}</div>` : "");
+
+  const app =
+    document.getElementById("app");
+
+
+  app.innerHTML =
+    renderHeader() +
+
+    (
+      state.modo === "recepcao"
+        ? renderRecepcao()
+        : renderAdmin()
+    ) +
+
+    (
+      state.modal
+        ? renderModal()
+        : ""
+    ) +
+
+    (
+      state.toast
+        ? `
+          <div
+            class="toast"
+            style="
+              background:${state.toast.erro
+                ? "#ff4d4d"
+                : "#c6ff00"}
+            "
+          >
+            ${esc(state.toast.msg)}
+          </div>
+        `
+        : ""
+    );
+
 
   bind();
 }
 
+
+/* ============================================================
+   HEADER
+============================================================ */
+
 function renderHeader() {
+
   return `
     <header class="header">
+
       <div class="brand">
-        <div class="logo">N</div>
-        <div>
-          <div class="brand-title">NOW<span style="color:#c6ff00">FIT</span></div>
-          <div class="brand-sub">Unidade Cedro · Controle de Estoque & Turnos</div>
+
+        <div class="logo">
+          N
         </div>
+
+        <div>
+
+          <div class="brand-title">
+            NOW<span style="color:#c6ff00">
+              FIT
+            </span>
+          </div>
+
+          <div class="brand-sub">
+            Unidade Cedro · Controle de Estoque & Turnos
+          </div>
+
+        </div>
+
       </div>
+
+
       <div class="toggle">
-        <button class="${state.modo === "recepcao" ? "active" : ""}" data-action="recepcao">Recepção</button>
-        <button class="${state.modo === "administrativo" ? "active" : ""}" data-action="admin">Painel Administrativo</button>
+
+        <button
+          class="${state.modo === "recepcao" ? "active" : ""}"
+          data-action="recepcao"
+        >
+          Recepção
+        </button>
+
+
+        <button
+          class="${state.modo === "administrativo" ? "active" : ""}"
+          data-action="admin"
+        >
+          Painel Administrativo
+        </button>
+
       </div>
+
     </header>
   `;
 }
 
+
+/* ============================================================
+   RECEPÇÃO
+============================================================ */
+
 function renderRecepcao() {
-  const conf = CONFERENCIAS[state.conf];
-  const registro = state.dia.conferencias[state.conf];
-  let totalQtd = 0, totalFat = 0;
+
+  const conf =
+    CONFERENCIAS[state.conf];
+
+
+  const registro =
+    state.dia.conferencias[
+      state.conf
+    ];
+
+
+  let totalQtd = 0;
+
+  let totalFat = 0;
+
 
   state.produtos.forEach(p => {
-    const item = registro.produtos[p.id] || {};
-    const qtd = Number(item.vendido) || 0;
+
+    const item =
+      registro.produtos[p.id] || {};
+
+
+    const qtd =
+      Number(item.vendido) || 0;
+
+
     totalQtd += qtd;
-    totalFat += qtd * Number(p.preco || 0);
+
+
+    totalFat +=
+      qtd *
+      Number(p.preco || 0);
+
   });
 
-  const produtosBaixo = obterProdutosBaixoEstoque();
-  const feitas = state.dia.conferencias.filter(r => r?.finalizado).length;
-  const progresso = (feitas / 6) * 100;
-  const turnoFinalizado = registro.finalizado;
+
+  const produtosBaixo =
+    obterProdutosBaixoEstoque();
+
+
+  const feitas =
+    state.dia.conferencias.filter(
+      r => r?.finalizado
+    ).length;
+
+
+  const progresso =
+    (feitas / 6) * 100;
+
+
+  const turnoFinalizado =
+    registro.finalizado;
+
 
   return `
     <main class="container">
+
       <div class="top">
+
         <div class="field">
-          <label class="label">Data</label>
-          <input id="data" class="input" type="date" value="${state.data}">
+
+          <label class="label">
+            Data
+          </label>
+
+          <input
+            id="data"
+            class="input"
+            type="date"
+            value="${state.data}"
+          >
+
         </div>
+
+
         <div class="progress">
-          <div class="progress-text">${feitas} de 6 conferências finalizadas</div>
-          <div class="progress-bg">
-            <div class="progress-bar" style="width:${progresso}%"></div>
+
+          <div class="progress-text">
+            ${feitas} de 6 conferências finalizadas
           </div>
+
+          <div class="progress-bg">
+
+            <div
+              class="progress-bar"
+              style="width:${progresso}%"
+            ></div>
+
+          </div>
+
         </div>
+
       </div>
+
 
       <div class="turnos">
-        ${CONFERENCIAS.map((c, index) => {
-          const feito = state.dia.conferencias[index]?.finalizado;
-          return `
-            <button class="turno ${state.conf === index ? "active" : ""}" data-conf="${index}">
-              <div class="turno-top">
-                <span class="dot ${feito ? "done" : ""}"></span>
-                ${c.turno}
-              </div>
-              <span class="turno-sub">${c.tipo} · ${c.hora}</span>
-            </button>
-          `;
-        }).join("")}
+
+        ${CONFERENCIAS.map(
+          (c, index) => {
+
+            const feito =
+              state.dia.conferencias[
+                index
+              ]?.finalizado;
+
+
+            return `
+              <button
+                class="turno ${state.conf === index ? "active" : ""}"
+                data-conf="${index}"
+              >
+
+                <div class="turno-top">
+
+                  <span
+                    class="dot ${feito ? "done" : ""}"
+                  ></span>
+
+                  ${c.turno}
+
+                </div>
+
+                <span class="turno-sub">
+                  ${c.tipo} · ${c.hora}
+                </span>
+
+              </button>
+            `;
+
+          }
+        ).join("")}
+
       </div>
 
-      <!-- Banner que exibe APENAS produtos com Estoque Baixo (< 5 un) -->
-      <div class="alert-banner ${produtosBaixo.length > 0 ? 'active' : ''}">
+
+      <div
+        class="alert-banner
+        ${produtosBaixo.length > 0
+          ? "active"
+          : ""}"
+      >
+
         <div>
-          🚨 <strong>ALERTA DE ESTOQUE BAIXO:</strong><br>
+
+          🚨
+          <strong>
+            ALERTA DE ESTOQUE BAIXO:
+          </strong>
+
+          <br>
+
           <span style="font-size:0.8rem;">
-            ${produtosBaixo.map(p => `${esc(p.nome)} (${estoqueFinal(state.conf, p.id)} un)`).join(" • ")}
+
+            ${produtosBaixo
+              .map(
+                p =>
+                  `${esc(p.nome)} (${estoqueFinal(state.conf, p.id)} un)`
+              )
+              .join(" • ")
+            }
+
           </span>
+
         </div>
-        <button class="btn whatsapp" style="padding:6px 12px; font-size:.75rem;" onclick="enviarWhatsApp()">Enviar Alerta</button>
+
+
+        <button
+          class="btn whatsapp"
+          style="
+            padding:6px 12px;
+            font-size:.75rem;
+          "
+          onclick="enviarWhatsApp()"
+        >
+          Enviar Alerta
+        </button>
+
       </div>
 
+
       <div class="card">
+
         <div class="card-title">
-          <span>NOWFIT CEDRO — RELATÓRIO DE ESTOQUE (${conf.turno} - ${conf.tipo})</span>
-          <span style="font-size:.72rem">${conf.hora} | Data: ${dataBR(state.data)} ${turnoFinalizado ? '<b style="color:#00e0a4;">[CONCLUÍDO]</b>' : ''}</span>
+
+          <span>
+            NOWFIT CEDRO — RELATÓRIO DE ESTOQUE
+            (${conf.turno} - ${conf.tipo})
+          </span>
+
+          <span style="font-size:.72rem">
+
+            ${conf.hora}
+            |
+            Data: ${dataBR(state.data)}
+
+            ${
+              turnoFinalizado
+                ? '<b style="color:#00e0a4;">[CONCLUÍDO]</b>'
+                : ''
+            }
+
+          </span>
+
         </div>
+
+
         <div class="card-body">
+
           <div class="field">
-            <label class="label">Responsável pela conferência</label>
-            <select id="responsavel" class="select" ${turnoFinalizado ? 'disabled' : ''}>
-              <option value="">Selecione quem está conferindo...</option>
-              ${RESPONSAVEIS.map(nome => `
-                <option value="${esc(nome)}" ${registro.responsavel === nome ? "selected" : ""}>${esc(nome)}</option>
-              `).join("")}
+
+            <label class="label">
+              Responsável pela conferência
+            </label>
+
+            <select
+              id="responsavel"
+              class="select"
+              ${turnoFinalizado ? "disabled" : ""}
+            >
+
+              <option value="">
+                Selecione quem está conferindo...
+              </option>
+
+              ${RESPONSAVEIS.map(
+                nome => `
+                  <option
+                    value="${esc(nome)}"
+                    ${
+                      registro.responsavel === nome
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    ${esc(nome)}
+                  </option>
+                `
+              ).join("")}
+
             </select>
+
           </div>
+
         </div>
+
       </div>
 
+
       <div class="card">
-        <div class="card-title"><span>Produtos do Estoque</span></div>
+
+        <div class="card-title">
+
+          <span>
+            Produtos do Estoque
+          </span>
+
+        </div>
+
+
         <div class="card-body">
+
           <div class="table-wrap">
+
             <table>
+
               <thead>
+
                 <tr>
-                  <th>Produto</th>
-                  <th>Anterior</th>
-                  <th>Reposição</th>
-                  <th>Vendido</th>
-                  <th>Atual</th>
-                  <th>Faturado</th>
+
+                  <th>
+                    Produto
+                  </th>
+
+                  <th>
+                    Anterior
+                  </th>
+
+                  <th>
+                    Reposição
+                  </th>
+
+                  <th>
+                    Vendido
+                  </th>
+
+                  <th>
+                    Atual
+                  </th>
+
+                  <th>
+                    Faturado
+                  </th>
+
                 </tr>
+
               </thead>
+
+
               <tbody>
+
                 ${state.produtos.map(p => {
-                  const item = registro.produtos[p.id] || {};
-                  const anterior = estoqueAnterior(state.conf, p.id);
-                  const atual = estoqueFinal(state.conf, p.id);
-                  const vendido = Number(item.vendido) || 0;
-                  const faturado = vendido * Number(p.preco || 0);
+
+                  const item =
+                    registro.produtos[p.id] || {};
+
+
+                  const anterior =
+                    estoqueAnterior(
+                      state.conf,
+                      p.id
+                    );
+
+
+                  const atual =
+                    estoqueFinal(
+                      state.conf,
+                      p.id
+                    );
+
+
+                  const vendido =
+                    Number(item.vendido) || 0;
+
+
+                  const faturado =
+                    vendido *
+                    Number(p.preco || 0);
+
 
                   return `
-                    <tr data-linha-produto="${p.id}">
+                    <tr
+                      data-linha-produto="${p.id}"
+                    >
+
                       <td>
-                        <div class="product-name">${esc(p.nome)}</div>
-                        <span class="tag">${esc(p.cat)} · ${dinheiro(p.preco)}</span>
+
+                        <div class="product-name">
+                          ${esc(p.nome)}
+                        </div>
+
+                        <span class="tag">
+                          ${esc(p.cat)}
+                          ·
+                          ${dinheiro(p.preco)}
+                        </span>
+
                       </td>
-                      <td data-cel-anterior>${anterior}</td>
+
+
+                      <td data-cel-anterior>
+                        ${anterior}
+                      </td>
+
+
                       <td>
-                        <input class="number" type="number" min="0" value="${esc(item.reposicao)}"
-                          ${turnoFinalizado ? 'disabled' : ''}
-                          oninput="alterarCampo(${p.id}, 'reposicao', this.value)">
+
+                        <input
+                          class="number"
+                          type="number"
+                          min="0"
+                          value="${esc(item.reposicao)}"
+                          ${
+                            turnoFinalizado
+                              ? "disabled"
+                              : ""
+                          }
+                          oninput="
+                            alterarCampo(
+                              ${p.id},
+                              'reposicao',
+                              this.value
+                            )
+                          "
+                        >
+
                       </td>
+
+
                       <td>
-                        <input class="number" type="number" min="0" value="${esc(item.vendido)}"
-                          ${turnoFinalizado ? 'disabled' : ''}
-                          oninput="alterarCampo(${p.id}, 'vendido', this.value)">
+
+                        <input
+                          class="number"
+                          type="number"
+                          min="0"
+                          value="${esc(item.vendido)}"
+                          ${
+                            turnoFinalizado
+                              ? "disabled"
+                              : ""
+                          }
+                          oninput="
+                            alterarCampo(
+                              ${p.id},
+                              'vendido',
+                              this.value
+                            )
+                          "
+                        >
+
                       </td>
-                      <td class="stock ${atual < 0 ? 'neg' : 'ok'}" data-cel-atual>${atual}</td>
-                      <td data-cel-faturado>${dinheiro(faturado)}</td>
+
+
+                      <td
+                        class="stock ${
+                          atual < 0
+                            ? "neg"
+                            : "ok"
+                        }"
+                        data-cel-atual
+                      >
+                        ${atual}
+                      </td>
+
+
+                      <td data-cel-faturado>
+                        ${dinheiro(faturado)}
+                      </td>
+
                     </tr>
                   `;
+
                 }).join("")}
+
               </tbody>
+
             </table>
+
           </div>
+
         </div>
+
       </div>
+
 
       <div class="summary">
+
         <div>
-          <span class="summary-label">Itens Vendidos</span>
-          <div class="summary-value" data-total-qtd>${totalQtd}</div>
+
+          <span class="summary-label">
+            Itens Vendidos
+          </span>
+
+          <div
+            class="summary-value"
+            data-total-qtd
+          >
+            ${totalQtd}
+          </div>
+
         </div>
+
+
         <div>
-          <span class="summary-label">Faturamento do Turno</span>
-          <div class="summary-value" style="color:#c6ff00" data-total-fat>${dinheiro(totalFat)}</div>
+
+          <span class="summary-label">
+            Faturamento do Turno
+          </span>
+
+          <div
+            class="summary-value"
+            style="color:#c6ff00"
+            data-total-fat
+          >
+            ${dinheiro(totalFat)}
+          </div>
+
         </div>
+
       </div>
 
-      <!-- Botões de Ação com Concluir / Reabrir Turno -->
+
       <div class="actions">
-        ${!turnoFinalizado ? `
-          <button class="btn finish" onclick="finalizarTurno()">✔ Concluir Turno</button>
-        ` : `
-          <button class="btn reopen" onclick="reabrirTurno()">🔓 Reabrir Turno</button>
-        `}
-        <button class="btn whatsapp" onclick="enviarWhatsApp()">💬 WhatsApp</button>
-        <button class="btn copy-btn" onclick="copiarTextoPlanilha()">📋 Copiar Texto</button>
-        <button class="btn excel" onclick="exportarExcelCSV()">📊 Exportar Excel</button>
-        <button class="btn secondary" onclick="imprimirRelatorioPDF()">📄 Imprimir / PDF</button>
+
+        ${
+          !turnoFinalizado
+            ? `
+              <button
+                class="btn finish"
+                onclick="finalizarTurno()"
+              >
+                ✔ Concluir Turno
+              </button>
+            `
+            : `
+              <button
+                class="btn reopen"
+                onclick="reabrirTurno()"
+              >
+                🔓 Reabrir Turno
+              </button>
+            `
+        }
+
+
+        <button
+          class="btn whatsapp"
+          onclick="enviarWhatsApp()"
+        >
+          💬 WhatsApp
+        </button>
+
+
+        <button
+          class="btn copy-btn"
+          onclick="copiarTextoPlanilha()"
+        >
+          📋 Copiar Texto
+        </button>
+
+
+        <button
+          class="btn excel"
+          onclick="exportarExcelCSV()"
+        >
+          📊 Exportar Excel
+        </button>
+
+
+        <button
+          class="btn secondary"
+          onclick="imprimirRelatorioPDF()"
+        >
+          📄 Imprimir / PDF
+        </button>
+
       </div>
+
 
       <div class="assinatura-area">
+
         <div class="assinatura-box">
-          <b>${registro.responsavel || "Responsável pelo Turno"}</b><br>
+
+          <b>
+            ${registro.responsavel || "Responsável pelo Turno"}
+          </b>
+
+          <br>
+
           Conferência de Estoque
+
         </div>
+
+
         <div class="assinatura-box">
-          <b>Gerência / Supervisão</b><br>
+
+          <b>
+            Gerência / Supervisão
+          </b>
+
+          <br>
+
           NOWfit Academia - Unidade Cedro
+
         </div>
+
       </div>
+
     </main>
   `;
 }
 
+
+/* ============================================================
+   ADMIN
+============================================================ */
+
 function renderAdmin() {
-  const res = calcularResumo();
+
+  const res =
+    calcularResumo();
+
 
   return `
     <main class="container">
+
       <div class="admin-tabs">
-        <button class="btn ${state.abaAdmin === "resumo" ? "primary" : "secondary"}" onclick="state.abaAdmin='resumo';render();">Resumo Geral</button>
-        <button class="btn ${state.abaAdmin === "produtos" ? "primary" : "secondary"}" onclick="state.abaAdmin='produtos';render();">Gerenciar Produtos</button>
-        <button class="btn ${state.abaAdmin === "ajuste" ? "primary" : "secondary"}" onclick="state.abaAdmin='ajuste';render();">Ajuste Físico</button>
-        <button class="btn ${state.abaAdmin === "logs" ? "primary" : "secondary"}" onclick="state.abaAdmin='logs';render();">Logs / Auditoria</button>
+
+        <button
+          class="btn ${
+            state.abaAdmin === "resumo"
+              ? "primary"
+              : "secondary"
+          }"
+          onclick="
+            state.abaAdmin='resumo';
+            render();
+          "
+        >
+          Resumo Geral
+        </button>
+
+
+        <button
+          class="btn ${
+            state.abaAdmin === "produtos"
+              ? "primary"
+              : "secondary"
+          }"
+          onclick="
+            state.abaAdmin='produtos';
+            render();
+          "
+        >
+          Gerenciar Produtos
+        </button>
+
+
+        <button
+          class="btn ${
+            state.abaAdmin === "ajuste"
+              ? "primary"
+              : "secondary"
+          }"
+          onclick="
+            state.abaAdmin='ajuste';
+            render();
+          "
+        >
+          Ajuste Físico
+        </button>
+
+
+        <button
+          class="btn ${
+            state.abaAdmin === "logs"
+              ? "primary"
+              : "secondary"
+          }"
+          onclick="
+            state.abaAdmin='logs';
+            render();
+          "
+        >
+          Logs / Auditoria
+        </button>
+
       </div>
 
-      ${state.abaAdmin === "resumo" ? `
-        <div class="kpis">
-          <div class="kpi">
-            <div class="kpi-label">Faturamento Total do Dia</div>
-            <div class="kpi-value" style="color:#c6ff00">${dinheiro(res.faturamento)}</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Total de Itens Vendidos</div>
-            <div class="kpi-value">${res.vendidos} un</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Estoque Total Restante</div>
-            <div class="kpi-value">${res.estoque} un</div>
-          </div>
-        </div>
-      ` : ""}
 
-      ${state.abaAdmin === "produtos" ? `
-        <div class="actions" style="margin-bottom: 15px;">
-          <button class="btn primary" onclick="state.modal='novo_produto';render();">➕ Adicionar Produto</button>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Categoria</th>
-                    <th>Preço</th>
-                    <th>Estoque Inicial</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${state.produtos.map(p => `
-                    <tr>
-                      <td class="product-name">${esc(p.nome)}</td>
-                      <td><span class="tag">${esc(p.cat)}</span></td>
-                      <td>${dinheiro(p.preco)}</td>
-                      <td>${p.estoqueInicial}</td>
-                      <td>
-                        <button class="btn danger" style="padding:4px 8px; font-size:.7rem;" onclick="removerProduto(${p.id})">Excluir</button>
-                      </td>
-                    </tr>
-                  `).join("")}
-                </tbody>
-              </table>
+      ${
+        state.abaAdmin === "resumo"
+          ? `
+            <div class="kpis">
+
+              <div class="kpi">
+
+                <div class="kpi-label">
+                  Faturamento Total do Dia
+                </div>
+
+                <div
+                  class="kpi-value"
+                  style="color:#c6ff00"
+                >
+                  ${dinheiro(res.faturamento)}
+                </div>
+
+              </div>
+
+
+              <div class="kpi">
+
+                <div class="kpi-label">
+                  Total de Itens Vendidos
+                </div>
+
+                <div class="kpi-value">
+                  ${res.vendidos} un
+                </div>
+
+              </div>
+
+
+              <div class="kpi">
+
+                <div class="kpi-label">
+                  Estoque Total Restante
+                </div>
+
+                <div class="kpi-value">
+                  ${res.estoque} un
+                </div>
+
+              </div>
+
             </div>
-          </div>
-        </div>
-      ` : ""}
+          `
+          : ""
+      }
 
-      ${state.abaAdmin === "ajuste" ? `
-        <div class="card">
-          <div class="card-title"><span>Ajuste Físico de Estoque</span></div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Produto</th>
-                    <th>Estoque Calculado</th>
-                    <th>Ajuste Contado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${state.produtos.map(p => {
-                    const item = state.dia.conferencias[state.conf]?.produtos?.[p.id] || {};
-                    const anterior = estoqueAnterior(state.conf, p.id);
-                    const reposicao = Number(item.reposicao) || 0;
-                    const vendido = Number(item.vendido) || 0;
-                    const calculado = anterior + reposicao - vendido;
 
-                    return `
-                      <tr data-linha-ajuste="${p.id}">
-                        <td>${esc(p.nome)}</td>
-                        <td data-cel-calculado>${calculado}</td>
-                        <td>
-                          <input class="number" type="number" value="${item.ajuste ?? ''}"
-                            oninput="ajustarEstoque(${p.id}, this.value)">
-                        </td>
+      ${
+        state.abaAdmin === "produtos"
+          ? `
+
+            <div
+              class="actions"
+              style="margin-bottom:15px;"
+            >
+
+              <button
+                class="btn primary"
+                onclick="
+                  state.modal='novo_produto';
+                  render();
+                "
+              >
+                ➕ Adicionar Produto
+              </button>
+
+            </div>
+
+
+            <div class="card">
+
+              <div class="card-body">
+
+                <div class="table-wrap">
+
+                  <table>
+
+                    <thead>
+
+                      <tr>
+
+                        <th>
+                          Nome
+                        </th>
+
+                        <th>
+                          Categoria
+                        </th>
+
+                        <th>
+                          Preço
+                        </th>
+
+                        <th>
+                          Estoque Inicial
+                        </th>
+
+                        <th>
+                          Ações
+                        </th>
+
                       </tr>
-                    `;
-                  }).join("")}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      ` : ""}
 
-      ${state.abaAdmin === "logs" ? `
-        <div class="history-box">
-          ${state.logs.map(log => `<div class="history-item">${esc(log)}</div>`).join("")}
-        </div>
-      ` : ""}
+                    </thead>
+
+
+                    <tbody>
+
+                      ${state.produtos.map(
+                        p => `
+
+                          <tr>
+
+                            <td class="product-name">
+                              ${esc(p.nome)}
+                            </td>
+
+                            <td>
+                              <span class="tag">
+                                ${esc(p.cat)}
+                              </span>
+                            </td>
+
+                            <td>
+                              ${dinheiro(p.preco)}
+                            </td>
+
+                            <td>
+                              ${p.estoqueInicial}
+                            </td>
+
+                            <td>
+
+                              <button
+                                class="btn danger"
+                                style="
+                                  padding:4px 8px;
+                                  font-size:.7rem;
+                                "
+                                onclick="
+                                  removerProduto(${p.id})
+                                "
+                              >
+                                Excluir
+                              </button>
+
+                            </td>
+
+                          </tr>
+
+                        `
+                      ).join("")}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          `
+          : ""
+      }
+
+
+      ${
+        state.abaAdmin === "ajuste"
+          ? `
+
+            <div class="card">
+
+              <div class="card-title">
+
+                <span>
+                  Ajuste Físico de Estoque
+                </span>
+
+              </div>
+
+
+              <div class="card-body">
+
+                <div class="table-wrap">
+
+                  <table>
+
+                    <thead>
+
+                      <tr>
+
+                        <th>
+                          Produto
+                        </th>
+
+                        <th>
+                          Estoque Calculado
+                        </th>
+
+                        <th>
+                          Ajuste Contado
+                        </th>
+
+                      </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                      ${state.produtos.map(p => {
+
+                        const item =
+                          state.dia.conferencias[
+                            state.conf
+                          ]?.produtos?.[p.id] || {};
+
+
+                        const anterior =
+                          estoqueAnterior(
+                            state.conf,
+                            p.id
+                          );
+
+
+                        const reposicao =
+                          Number(
+                            item.reposicao
+                          ) || 0;
+
+
+                        const vendido =
+                          Number(
+                            item.vendido
+                          ) || 0;
+
+
+                        const calculado =
+                          anterior +
+                          reposicao -
+                          vendido;
+
+
+                        return `
+
+                          <tr
+                            data-linha-ajuste="${p.id}"
+                          >
+
+                            <td>
+                              ${esc(p.nome)}
+                            </td>
+
+
+                            <td
+                              data-cel-calculado
+                            >
+                              ${calculado}
+                            </td>
+
+
+                            <td>
+
+                              <input
+                                class="number"
+                                type="number"
+                                value="${
+                                  item.ajuste ?? ''
+                                }"
+                                oninput="
+                                  ajustarEstoque(
+                                    ${p.id},
+                                    this.value
+                                  )
+                                "
+                              >
+
+                            </td>
+
+                          </tr>
+
+                        `;
+
+                      }).join("")}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          `
+          : ""
+      }
+
+
+      ${
+        state.abaAdmin === "logs"
+          ? `
+
+            <div class="history-box">
+
+              ${
+                state.logs
+                  .map(
+                    log =>
+                      `<div class="history-item">
+                        ${esc(log)}
+                      </div>`
+                  )
+                  .join("")
+              }
+
+            </div>
+
+          `
+          : ""
+      }
+
     </main>
   `;
 }
 
+
+/* ============================================================
+   MODAL
+============================================================ */
+
 function renderModal() {
-  if (state.modal === 'novo_produto') {
+
+  if (
+    state.modal ===
+    "novo_produto"
+  ) {
+
     return `
+
       <div class="modal-bg">
+
         <div class="modal">
-          <h3 style="margin-top:0;">Cadastrar Novo Produto</h3>
-          <form class="form-grid" onsubmit="salvarNovoProduto(event)">
-            <input id="p_nome" class="input" type="text" placeholder="Nome do Produto" required>
-            <input id="p_cat" class="input" type="text" placeholder="Categoria" required>
-            <input id="p_preco" class="input" type="number" step="0.01" placeholder="Preço (R$)" required>
-            <input id="p_qtd" class="input" type="number" placeholder="Estoque Inicial" required>
+
+          <h3 style="margin-top:0;">
+            Cadastrar Novo Produto
+          </h3>
+
+
+          <form
+            class="form-grid"
+            onsubmit="salvarNovoProduto(event)"
+          >
+
+            <input
+              id="p_nome"
+              class="input"
+              type="text"
+              placeholder="Nome do Produto"
+              required
+            >
+
+
+            <input
+              id="p_cat"
+              class="input"
+              type="text"
+              placeholder="Categoria"
+              required
+            >
+
+
+            <input
+              id="p_preco"
+              class="input"
+              type="number"
+              step="0.01"
+              placeholder="Preço (R$)"
+              required
+            >
+
+
+            <input
+              id="p_qtd"
+              class="input"
+              type="number"
+              placeholder="Estoque Inicial"
+              required
+            >
+
+
             <div class="modal-actions">
-              <button class="btn secondary" type="button" onclick="state.modal=null;render();">Cancelar</button>
-              <button class="btn primary" type="submit">Salvar Produto</button>
+
+              <button
+                class="btn secondary"
+                type="button"
+                onclick="
+                  state.modal=null;
+                  render();
+                "
+              >
+                Cancelar
+              </button>
+
+
+              <button
+                class="btn primary"
+                type="submit"
+              >
+                Salvar Produto
+              </button>
+
             </div>
+
           </form>
+
         </div>
+
       </div>
+
     `;
   }
+
+
   return "";
 }
 
+
+/* ============================================================
+   SALVAR PRODUTO
+============================================================ */
+
 function salvarNovoProduto(e) {
+
   e.preventDefault();
-  const nome = document.getElementById("p_nome").value;
-  const cat = document.getElementById("p_cat").value;
-  const preco = parseFloat(document.getElementById("p_preco").value);
-  const estoqueInicial = parseInt(document.getElementById("p_qtd").value);
+
+
+  const nome =
+    document.getElementById(
+      "p_nome"
+    ).value;
+
+
+  const cat =
+    document.getElementById(
+      "p_cat"
+    ).value;
+
+
+  const preco =
+    parseFloat(
+      document.getElementById(
+        "p_preco"
+      ).value
+    );
+
+
+  const estoqueInicial =
+    parseInt(
+      document.getElementById(
+        "p_qtd"
+      ).value
+    );
+
 
   const novo = {
+
     id: Date.now(),
+
     nome,
+
     cat,
+
     preco,
+
     estoqueInicial
+
   };
 
-  state.produtos.push(novo);
+
+  state.produtos.push(
+    novo
+  );
+
+
   salvarProdutos();
-  registrarLog(`[CADASTRO] Produto adicionado: ${nome}`);
+
+
+  registrarLog(
+    `[CADASTRO] Produto adicionado: ${nome}`
+  );
+
+
   state.modal = null;
-  toast("Produto cadastrado com sucesso!");
+
+
+  toast(
+    "Produto cadastrado com sucesso!"
+  );
+
+
   render();
 }
 
-function removerProduto(id) {
-  if (confirm("Tem certeza que deseja excluir este produto?")) {
-    state.produtos = state.produtos.filter(p => p.id !== id);
-    salvarProdutos();
-    registrarLog(`[EXCLUSÃO] Produto removido ID: ${id}`);
-    render();
-  }
-}
 
 /* ============================================================
-   EVENT BINDING & INICIALIZAÇÃO
+   REMOVER PRODUTO
 ============================================================ */
-function bind() {
-  document.querySelectorAll("[data-action]").forEach(btn => {
-    btn.onclick = () => {
-      const act = btn.getAttribute("data-action");
-      if (act === "recepcao") state.modo = "recepcao";
-      if (act === "admin") state.modo = "administrativo";
-      render();
-    };
-  });
 
-  document.querySelectorAll("[data-conf]").forEach(btn => {
-    btn.onclick = () => {
-      state.conf = parseInt(btn.getAttribute("data-conf"));
-      render();
-    };
-  });
+function removerProduto(id) {
 
-  const dataEl = document.getElementById("data");
-  if (dataEl) {
-    dataEl.onchange = (e) => {
-      state.data = e.target.value;
-      state.dia = carregarDia();
-      render();
-    };
-  }
+  if (
+    confirm(
+      "Tem certeza que deseja excluir este produto?"
+    )
+  ) {
 
-  const respEl = document.getElementById("responsavel");
-  if (respEl) {
-    respEl.onchange = (e) => alterarResponsavel(e.target.value);
+    state.produtos =
+      state.produtos.filter(
+        p => p.id !== id
+      );
+
+
+    salvarProdutos();
+
+
+    registrarLog(
+      `[EXCLUSÃO] Produto removido ID: ${id}`
+    );
+
+
+    render();
+
   }
 }
 
-// Render Inicial
+
+/* ============================================================
+   EVENTOS
+============================================================ */
+
+function bind() {
+
+  document
+    .querySelectorAll(
+      "[data-action]"
+    )
+    .forEach(btn => {
+
+      btn.onclick = () => {
+
+        const act =
+          btn.getAttribute(
+            "data-action"
+          );
+
+
+        if (
+          act === "recepcao"
+        ) {
+
+          state.modo =
+            "recepcao";
+
+        }
+
+
+        if (
+          act === "admin"
+        ) {
+
+          state.modo =
+            "administrativo";
+
+        }
+
+
+        render();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-conf]"
+    )
+    .forEach(btn => {
+
+      btn.onclick = () => {
+
+        state.conf =
+          parseInt(
+            btn.getAttribute(
+              "data-conf"
+            )
+          );
+
+
+        render();
+
+      };
+
+    });
+
+
+  const dataEl =
+    document.getElementById(
+      "data"
+    );
+
+
+  if (dataEl) {
+
+    dataEl.onchange =
+      (e) => {
+
+        state.data =
+          e.target.value;
+
+
+        state.dia =
+          carregarDia();
+
+
+        render();
+
+      };
+
+  }
+
+
+  const respEl =
+    document.getElementById(
+      "responsavel"
+    );
+
+
+  if (respEl) {
+
+    respEl.onchange =
+      (e) =>
+        alterarResponsavel(
+          e.target.value
+        );
+
+  }
+}
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+============================================================ */
+
 render();
+
 </script>
+
 </body>
 </html>
